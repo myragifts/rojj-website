@@ -109,6 +109,60 @@
       margin: 25px auto;
     }
 
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      text-align: left;
+    }
+
+    .collection-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 145px;
+      padding: 24px 18px;
+      border-radius: 12px;
+      border: 1px solid #eee5dc;
+      background: var(--white);
+      color: var(--brown);
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(74, 53, 50, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .collection-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 22px rgba(74, 53, 50, 0.10);
+    }
+
+    .collection-card h3 {
+      margin: 0 0 8px;
+      color: var(--terracotta);
+      font-size: 19px;
+    }
+
+    .collection-card p {
+      margin: 0;
+      color: #76635e;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    #collections-loading,
+    #collections-error {
+      padding: 18px;
+      color: #76635e;
+    }
+
+    #collections-error {
+      display: none;
+      color: #9a3328;
+      background: #fff0ed;
+      border-radius: 8px;
+    }
+
     .product-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -259,6 +313,11 @@
     }
 
     @media (max-width: 800px) {
+      .collection-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
       .product-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 16px;
@@ -271,6 +330,16 @@
     }
 
     @media (max-width: 520px) {
+      .collection-grid {
+        grid-template-columns: 1fr;
+        max-width: 380px;
+        margin: auto;
+      }
+
+      .collection-card {
+        min-height: 110px;
+      }
+
       .logo {
         font-size: 36px;
       }
@@ -322,7 +391,20 @@
       Discover the beauty of handmade Indian jewellery.
       Colourful designs, crafted with love.
     </p>
-    <a href="#products" class="button">Explore Our Collection</a>
+    <a href="#collections" class="button">Explore Our Collections</a>
+  </section>
+
+
+  <section class="section" id="collections">
+    <h2 class="section-heading">Explore Our Collections</h2>
+    <p class="section-intro">
+      Discover jewellery for every occasion, mood and colour.
+    </p>
+    <div id="collections-loading">Loading collections...</div>
+    <div id="collections-error">
+      Collections could not be loaded. Please try again later.
+    </div>
+    <div class="collection-grid" id="collections-grid"></div>
   </section>
 
   <section class="section" id="products">
@@ -493,6 +575,64 @@
       return card;
     }
 
+
+    function createCollectionCard(collection) {
+      const card = makeElement("a", "collection-card");
+      card.href = "#products";
+      card.setAttribute("aria-label", "Explore " + (collection.name || "ROJJ collection"));
+      card.appendChild(makeElement("h3", "", collection.name || "ROJJ Collection"));
+
+      card.appendChild(makeElement(
+        "p",
+        "",
+        collection.description || "Discover this ROJJ collection."
+      ));
+
+      card.addEventListener("click", function() {
+        const productSection = document.getElementById("products");
+        if (productSection) {
+          productSection.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+
+      return card;
+    }
+
+    async function loadROJJCollections() {
+      const loading = document.getElementById("collections-loading");
+      const error = document.getElementById("collections-error");
+      const grid = document.getElementById("collections-grid");
+
+      try {
+        const response = await fetch(ROJJ_API_URL + "?action=collections");
+        if (!response.ok) {
+          throw new Error("The collections API returned an error.");
+        }
+
+        const data = await response.json();
+        if (!data.success || !Array.isArray(data.collections)) {
+          throw new Error("The collection data format is invalid.");
+        }
+
+        loading.style.display = "none";
+
+        if (data.collections.length === 0) {
+          grid.appendChild(makeElement("p", "", "Our collections are coming soon."));
+          return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        data.collections.forEach(function(collection) {
+          fragment.appendChild(createCollectionCard(collection));
+        });
+        grid.replaceChildren(fragment);
+      } catch (errorDetails) {
+        console.error("ROJJ collections loading error:", errorDetails);
+        loading.style.display = "none";
+        error.style.display = "block";
+      }
+    }
+
     async function loadROJJProducts() {
       const loading = document.getElementById("loading");
       const error = document.getElementById("error-message");
@@ -534,6 +674,7 @@
       }
     }
 
+    loadROJJCollections();
     loadROJJProducts();
   </script>
 
