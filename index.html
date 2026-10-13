@@ -49,6 +49,45 @@
       font-size: 12px;
     }
 
+    .header-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .favourites-top-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--rose);
+      background: var(--ivory);
+      color: var(--brown);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .favourites-top-button:hover,
+    .favourites-top-button[aria-pressed="true"] {
+      background: var(--terracotta);
+      color: white;
+    }
+
+    .favourite-count {
+      display: inline-flex;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: white;
+      color: var(--terracotta);
+      font-size: 12px;
+    }
+
     .hero {
       text-align: center;
       padding: 75px 20px;
@@ -288,6 +327,44 @@
       width: 100%;
     }
 
+    .favourite-button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 11px 14px;
+      border: 1px solid var(--rose);
+      border-radius: 6px;
+      background: white;
+      color: var(--brown);
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .favourite-button:hover,
+    .favourite-button.is-saved {
+      background: #f8e9e7;
+      color: #9f3e46;
+      border-color: #d9a3a5;
+    }
+
+    .favourites-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 0 0 20px;
+    }
+
+    .back-to-products {
+      border: 0;
+      background: transparent;
+      color: var(--terracotta);
+      font-weight: bold;
+      cursor: pointer;
+      padding: 8px 12px;
+    }
+
     .story {
       background: var(--white);
       padding: 45px 20px;
@@ -383,6 +460,12 @@
   <header>
     <h1 class="logo">ROJJ</h1>
     <div class="tagline">WEAR YOUR COLOURS</div>
+    <div class="header-actions">
+      <button type="button" class="favourites-top-button" id="my-favourites-button" aria-pressed="false">
+        <span aria-hidden="true">♡</span> My Favourites
+        <span class="favourite-count" id="favourite-count">0</span>
+      </button>
+    </div>
   </header>
 
   <section class="hero">
@@ -409,9 +492,14 @@
 
   <section class="section" id="products">
     <h2 class="section-heading">Discover ROJJ</h2>
-    <p class="section-intro">
+    <p class="section-intro" id="products-intro">
       Find something beautiful to match your colours and your style.
     </p>
+
+    <div class="favourites-toolbar" id="favourites-toolbar" hidden>
+      <span id="favourites-status">Your saved ROJJ products</span>
+      <button type="button" class="back-to-products" id="back-to-products">← Back to all products</button>
+    </div>
 
     <div id="loading">Loading our collection...</div>
 
@@ -451,6 +539,100 @@
     // Use country code + number, without +, spaces or dashes.
     // Example format for India: 919876543210
     const ROJJ_WHATSAPP_NUMBER = "919836697502";
+    const ROJJ_FAVOURITES_KEY = "rojj_favourite_product_ids_v1";
+    let rojjAllProducts = [];
+    let showingFavouritesOnly = false;
+
+    function getFavouriteIds() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(ROJJ_FAVOURITES_KEY) || "[]");
+        return Array.isArray(saved) ? saved.map(String) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveFavouriteIds(ids) {
+      try {
+        localStorage.setItem(ROJJ_FAVOURITES_KEY, JSON.stringify(ids));
+        updateFavouriteCount();
+        return true;
+      } catch (error) {
+        alert("Your browser could not save favourites. Please check your browser storage settings.");
+        return false;
+      }
+    }
+
+    function isFavourite(productId) {
+      return getFavouriteIds().includes(String(productId));
+    }
+
+    function updateFavouriteCount() {
+      const count = getFavouriteIds().length;
+      const badge = document.getElementById("favourite-count");
+      if (badge) badge.textContent = String(count);
+      const topButton = document.getElementById("my-favourites-button");
+      if (topButton) topButton.setAttribute("aria-pressed", String(showingFavouritesOnly));
+    }
+
+    function toggleFavourite(product) {
+      const id = String(product.id);
+      let ids = getFavouriteIds();
+      if (ids.includes(id)) {
+        ids = ids.filter(function(savedId) { return savedId !== id; });
+      } else {
+        ids.push(id);
+      }
+      if (!saveFavouriteIds(ids)) return;
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById("product-grid");
+      const empty = document.getElementById("empty-message");
+      const intro = document.getElementById("products-intro");
+      const toolbar = document.getElementById("favourites-toolbar");
+      const status = document.getElementById("favourites-status");
+      const error = document.getElementById("error-message");
+      const loading = document.getElementById("loading");
+      const ids = getFavouriteIds();
+      const products = showingFavouritesOnly
+        ? rojjAllProducts.filter(function(product) { return ids.includes(String(product.id)); })
+        : rojjAllProducts;
+
+      toolbar.hidden = !showingFavouritesOnly;
+      intro.textContent = showingFavouritesOnly
+        ? "Your favourite ROJJ pieces, saved on this device."
+        : "Find something beautiful to match your colours and your style.";
+      status.textContent = products.length
+        ? products.length + (products.length === 1 ? " saved product" : " saved products")
+        : "You haven't saved any favourites yet.";
+      loading.style.display = "none";
+      error.style.display = "none";
+      empty.style.display = products.length === 0 ? "block" : "none";
+      if (showingFavouritesOnly && products.length === 0) {
+        empty.querySelector("h3").textContent = "No Favourites Yet";
+        empty.querySelector("p").textContent = "Tap ♡ Add to Favourites on any product to save it here.";
+      } else {
+        empty.querySelector("h3").textContent = "Our Collection Is Coming Soon";
+        empty.querySelector("p").textContent = "We are preparing something beautiful for you.";
+      }
+      const fragment = document.createDocumentFragment();
+      products.forEach(function(product) { fragment.appendChild(createProductCard(product)); });
+      grid.replaceChildren(fragment);
+      updateFavouriteCount();
+    }
+
+    document.getElementById("my-favourites-button").addEventListener("click", function() {
+      showingFavouritesOnly = !showingFavouritesOnly;
+      renderProducts();
+      document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.getElementById("back-to-products").addEventListener("click", function() {
+      showingFavouritesOnly = false;
+      renderProducts();
+    });
 
     document.getElementById("year").textContent =
       new Date().getFullYear();
@@ -570,6 +752,18 @@
       }
 
       details.appendChild(button);
+
+      const favouriteButton = makeElement(
+        "button",
+        "favourite-button" + (isFavourite(product.id) ? " is-saved" : ""),
+        isFavourite(product.id) ? "♥ Added to Favourites" : "♡ Add to Favourites"
+      );
+      favouriteButton.type = "button";
+      favouriteButton.setAttribute("aria-pressed", String(isFavourite(product.id)));
+      favouriteButton.addEventListener("click", function() {
+        toggleFavourite(product);
+      });
+      details.appendChild(favouriteButton);
       card.appendChild(details);
 
       return card;
@@ -659,13 +853,8 @@
           return;
         }
 
-        const fragment = document.createDocumentFragment();
-
-        data.products.forEach(function(product) {
-          fragment.appendChild(createProductCard(product));
-        });
-
-        grid.replaceChildren(fragment);
+        rojjAllProducts = data.products;
+        renderProducts();
 
       } catch (errorDetails) {
         console.error("ROJJ product loading error:", errorDetails);
@@ -674,6 +863,7 @@
       }
     }
 
+    updateFavouriteCount();
     loadROJJCollections();
     loadROJJProducts();
   </script>
