@@ -357,13 +357,31 @@
     }
 
     .back-to-products {
-      border: 0;
-      background: transparent;
-      color: var(--terracotta);
+      border: 2px solid var(--terracotta);
+      background: var(--terracotta);
+      color: #fff;
       font-weight: bold;
       cursor: pointer;
-      padding: 8px 12px;
+      padding: 13px 20px;
+      border-radius: 999px;
+      font-size: 15px;
+      box-shadow: 0 4px 12px rgba(74, 53, 50, .18);
+      transition: transform .15s ease, background .15s ease;
     }
+    .back-to-products:hover { background: var(--brown); border-color: var(--brown); transform: translateY(-1px); }
+    .favourites-toolbar { padding: 16px; background: #fff; border: 1px solid var(--rose); border-radius: 14px; }
+
+    .order-modal[hidden] { display: none !important; }
+    .order-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(35, 24, 22, .62); }
+    .order-modal-panel { position: relative; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: #fff; border-radius: 18px; padding: 26px; text-align: left; box-shadow: 0 16px 50px rgba(0,0,0,.25); }
+    .order-modal-panel h2 { margin: 0 34px 8px 0; color: var(--brown); }
+    .order-modal-panel p { line-height: 1.5; }
+    .order-close { position: absolute; right: 14px; top: 10px; border: 0; background: #f5e9e5; border-radius: 50%; width: 38px; height: 38px; font-size: 24px; cursor: pointer; }
+    .order-form label { display: block; font-weight: bold; margin: 13px 0 6px; }
+    .order-form input, .order-form textarea { width: 100%; padding: 12px; border: 1px solid #d8c9c0; border-radius: 8px; font: inherit; }
+    .order-form textarea { min-height: 78px; resize: vertical; }
+    .order-submit { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 9px; background: #238b52; color: white; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .order-submit:disabled { opacity: .65; cursor: wait; }
 
     .story {
       background: var(--white);
@@ -530,6 +548,21 @@
     <p>© <span id="year"></span> ROJJ. All rights reserved.</p>
   </footer>
 
+  <div class="order-modal" id="order-modal" hidden>
+    <div class="order-modal-panel" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
+      <button type="button" class="order-close" id="order-close" aria-label="Close">×</button>
+      <h2 id="order-modal-title">Complete Your ROJJ Order</h2>
+      <p id="order-product-summary">Please enter your details before continuing to WhatsApp.</p>
+      <form class="order-form" id="order-form">
+        <label for="customer-name">Your name *</label><input id="customer-name" name="name" autocomplete="name" required maxlength="80" placeholder="Enter your full name">
+        <label for="customer-phone">WhatsApp / phone number *</label><input id="customer-phone" name="phone" autocomplete="tel" required type="tel" maxlength="20" placeholder="Enter your phone number">
+        <label for="customer-address">Delivery address *</label><textarea id="customer-address" name="address" autocomplete="street-address" required maxlength="500" placeholder="House, street, area, city, PIN code"></textarea>
+        <label for="order-quantity">Quantity *</label><input id="order-quantity" name="quantity" type="number" min="1" max="99" value="1" required>
+        <button class="order-submit" id="order-submit" type="submit">Continue to WhatsApp to Order</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     // ROJJ Google Sheets API
     const ROJJ_API_URL =
@@ -542,6 +575,7 @@
     const ROJJ_FAVOURITES_KEY = "rojj_favourite_product_ids_v1";
     let rojjAllProducts = [];
     let showingFavouritesOnly = false;
+    let rojjSelectedOrderProduct = null;
 
     function getFavouriteIds() {
       try {
@@ -634,8 +668,60 @@
       renderProducts();
     });
 
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    function openOrderModal(product) {
+      rojjSelectedOrderProduct = product;
+      document.getElementById("order-product-summary").textContent =
+        (product.name || "ROJJ Jewellery") + " — ₹" + Number(product.price || 0).toLocaleString("en-IN") + " each. Please enter your details.";
+      document.getElementById("order-quantity").value = "1";
+      document.getElementById("order-modal").hidden = false;
+      document.body.style.overflow = "hidden";
+      document.getElementById("customer-name").focus();
+    }
+    function closeOrderModal() {
+      document.getElementById("order-modal").hidden = true;
+      document.body.style.overflow = "";
+    }
+    document.getElementById("order-close").addEventListener("click", closeOrderModal);
+    document.getElementById("order-modal").addEventListener("click", function(event) {
+      if (event.target.id === "order-modal") closeOrderModal();
+    });
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape" && !document.getElementById("order-modal").hidden) closeOrderModal();
+    });
+    document.getElementById("order-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      if (!rojjSelectedOrderProduct) return;
+      const name = document.getElementById("customer-name").value.trim();
+      const phone = document.getElementById("customer-phone").value.trim();
+      const address = document.getElementById("customer-address").value.trim();
+      const quantity = Math.max(1, Math.min(99, parseInt(document.getElementById("order-quantity").value, 10) || 1));
+      if (!name || !phone || !address) { alert("Please complete all required details."); return; }
+      const product = rojjSelectedOrderProduct;
+      const unitPrice = Number(product.price || 0);
+      const total = unitPrice * quantity;
+      const message = "Hello ROJJ! I would like to place an order.\n\n" +
+        "PRODUCT DETAILS\nProduct: " + (product.name || "ROJJ Jewellery") +
+        "\nProduct ID: " + (product.id || "N/A") +
+        "\nCategory: " + (product.category || "Jewellery") +
+        "\nQuantity: " + quantity +
+        "\nPrice each: ₹" + unitPrice.toLocaleString("en-IN") +
+        "\nTOTAL: ₹" + total.toLocaleString("en-IN") +
+        "\n\nCUSTOMER DETAILS\nName: " + name +
+        "\nPhone: " + phone +
+        "\nDelivery address: " + address +
+        "\n\nPlease confirm availability, delivery charges and payment instructions. I will share payment proof after paying.";
+      const whatsappUrl = "https://wa.me/" + ROJJ_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+      const submit = document.getElementById("order-submit");
+      submit.disabled = true;
+      submit.textContent = "Opening WhatsApp…";
+      const win = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      if (!win) window.location.href = whatsappUrl;
+      closeOrderModal();
+      submit.disabled = false;
+      submit.textContent = "Continue to WhatsApp to Order";
+    });
 
     function makeElement(tag, className, text) {
       const element = document.createElement(tag);
@@ -728,29 +814,11 @@
 
       details.appendChild(priceRow);
 
-      const button = makeElement("a", "button", "Order on WhatsApp");
-
-      if (ROJJ_WHATSAPP_NUMBER) {
-        const message =
-          "Hello ROJJ! I would like to order:\n" +
-          product.name +
-          "\nProduct ID: " + product.id +
-          "\nPrice: ₹" + product.price;
-
-        button.href =
-          "https://wa.me/" +
-          ROJJ_WHATSAPP_NUMBER +
-          "?text=" +
-          encodeURIComponent(message);
-
-        button.target = "_blank";
-        button.rel = "noopener noreferrer";
-      } else {
-        button.href = "#contact";
-        button.textContent = "Contact Details Coming Soon";
-        button.setAttribute("aria-label", "ROJJ ordering details are being prepared");
-      }
-
+      const button = makeElement("button", "button", "Order on WhatsApp");
+      button.type = "button";
+      button.style.border = "0";
+      button.style.cursor = "pointer";
+      button.addEventListener("click", function() { openOrderModal(product); });
       details.appendChild(button);
 
       const favouriteButton = makeElement(
