@@ -89,6 +89,63 @@ footer{padding:28px 20px;text-align:center;background:var(--brown);color:white;l
 footer p{margin:5px}
 @media(max-width:800px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.product-image,.image-placeholder{height:220px}}
 @media(max-width:520px){.collection-grid{grid-template-columns:1fr;max-width:380px;margin:auto}.collection-card{min-height:110px}.logo{font-size:36px}.hero{padding:55px 18px}.hero h2{font-size:30px}.hero p{font-size:15px}.section{padding:35px 14px}.section-heading{font-size:25px}.product-grid{grid-template-columns:1fr;max-width:380px;margin:auto}.product-image,.image-placeholder{height:280px}.order-modal{padding:8px}.order-modal-panel{padding:22px 18px;max-height:96vh}}
+
+/* Permanent quantity up/down controls */
+.quantity-control {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  border: 1px solid #d8c9c0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fffdfa;
+}
+.quantity-control:focus-within {
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px #b86f5a24;
+}
+.quantity-control input#order-quantity {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.quantity-control input#order-quantity::-webkit-inner-spin-button,
+.quantity-control input#order-quantity::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.quantity-stepper {
+  display: flex;
+  flex-direction: column;
+  width: 42px;
+  flex-shrink: 0;
+  border-left: 1px solid #e4c9bc;
+}
+.quantity-stepper button {
+  flex: 1;
+  min-height: 24px;
+  padding: 0;
+  border: 0;
+  background: #f5e8e1;
+  color: #4A3532;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.quantity-stepper button:hover {
+  background: #e8c9bb;
+}
+.quantity-stepper button:active {
+  background: #d9ad9a;
+}
+.quantity-stepper button + button {
+  border-top: 1px solid #e4c9bc;
+}
+  
 </style>
 </head>
 <body>
