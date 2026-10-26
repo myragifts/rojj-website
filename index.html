@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,6 +192,10 @@ footer p{margin:5px}
       <label for="order-quantity">Quantity *</label>
       <input id="order-quantity" name="quantity" type="number" inputmode="numeric" min="1" max="10" value="1" required>
       <p class="order-field-error" id="order-quantity-error"></p>
+      <div id="order-total-box" style="margin-top:14px;padding:14px 16px;background:#f5e8e1;border:1px solid #e4c9bc;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:600;color:#4A3532;">Total Price</span>
+        <strong id="order-total-price" style="font-size:22px;color:#B86F5A;">₹0</strong>
+      </div>
 
       <button class="order-submit" id="order-submit" type="submit">Continue to WhatsApp to Order</button>
     </form>
@@ -206,6 +209,13 @@ const ROJJ_FAVOURITES_KEY = "rojj_favourite_product_ids_v1";
 let rojjAllProducts = [];
 let showingFavouritesOnly = false;
 let rojjSelectedOrderProduct = null;
+
+function updateOrderTotal() {
+  const quantity = Number(document.getElementById("order-quantity").value) || 0;
+  const productPrice = Number(rojjSelectedOrderProduct?.price) || 0;
+  document.getElementById("order-total-price").textContent =
+    "₹" + (quantity * productPrice).toLocaleString("en-IN");
+}
 
 function rojjToast(message, title = "ROJJ", type = "info") {
   const region = document.getElementById("rojj-toast-region");
@@ -337,6 +347,7 @@ function openOrderModal(product) {
     Number(product.price || 0).toLocaleString("en-IN") +
     " each. Please enter your details.";
   document.getElementById("order-quantity").value = "1";
+  updateOrderTotal();
   document.getElementById("customer-phone").setCustomValidity("");
   document.getElementById("order-modal").hidden = false;
   document.body.style.overflow = "hidden";
@@ -357,6 +368,7 @@ document.addEventListener("keydown", event => {
 });
 
 const phoneInput = document.getElementById("customer-phone");
+document.getElementById("order-quantity").addEventListener("input", updateOrderTotal);
 
 document.getElementById("order-form").querySelectorAll("input").forEach(input => {
   input.addEventListener("input", () => {
@@ -433,8 +445,7 @@ document.getElementById("order-form").addEventListener("submit", event => {
     quantityInput.focus();
     return;
   }
-
-  const product = rojjSelectedOrderProduct;
+    const product = rojjSelectedOrderProduct;
   const unitPrice = Number(product.price || 0);
   const total = unitPrice * quantity;
 
@@ -457,7 +468,12 @@ document.getElementById("order-form").addEventListener("submit", event => {
     "State: " + state + "\n" +
     "PIN Code: " + pin +
     (landmark ? "\nLandmark: " + landmark : "") +
-    "\n\nPlease confirm availability, delivery charges and payment instructions. I will share payment proof after paying.";
+    "\n\n💳 PAYMENT LINK\n" +
+    "https://tinyurl.com/Complete-payment-Now\n\n" +
+    "🛍️ Click the link above and pay ₹" + total.toLocaleString("en-IN") + " to confirm your order.\n\n" +
+    "🚨📸 IMPORTANT — AFTER PAYMENT, PLEASE POST YOUR PAYMENT SCREENSHOT HERE 📸🚨\n\n" +
+    "Thank you for choosing ROJJ! ❤️\n" +
+    "✨ ROJJ — Wear Your Colours ✨";
 
   const whatsappUrl = "https://wa.me/" + ROJJ_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
   const submit = document.getElementById("order-submit");
