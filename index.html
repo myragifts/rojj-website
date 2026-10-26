@@ -405,7 +405,45 @@ function toggleFavourite(product) {
     rojjToast(wasSaved ? "Removed from your saved favourites." : "Saved to your favourites on this device.", wasSaved ? "Removed from Favourites" : "Added to Favourites", "success");
   }
 }
+function renderCategoryFilters() {
+  const container = document.getElementById("category-filters");
+  if (!container) return;
 
+  const categories = [
+    "All",
+    ...new Set(
+      rojjAllProducts
+        .map(p => String(p.category || "").trim())
+        .filter(Boolean)
+    )
+  ];
+
+  if (!categories.includes(selectedCategory)) {
+    selectedCategory = "All";
+  }
+
+  container.replaceChildren();
+
+  categories.forEach(category => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className =
+      "category-filter-btn" +
+      (category === selectedCategory ? " active" : "");
+    button.textContent = category;
+    button.setAttribute(
+      "aria-pressed",
+      String(category === selectedCategory)
+    );
+
+    button.addEventListener("click", () => {
+      selectedCategory = category;
+      renderProducts();
+    });
+
+    container.appendChild(button);
+  });
+}
 function renderProducts() {
   const grid = document.getElementById("product-grid");
   const empty = document.getElementById("empty-message");
