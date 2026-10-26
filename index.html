@@ -433,6 +433,20 @@ document.addEventListener("keydown", event => {
 const phoneInput = document.getElementById("customer-phone");
 document.getElementById("order-quantity").addEventListener("input", updateOrderTotal);
 
+const quantityField = document.getElementById("order-quantity");
+
+document.getElementById("quantity-up").addEventListener("click", () => {
+  const current = Number(quantityField.value) || 1;
+  quantityField.value = Math.min(10, Math.floor(current) + 1);
+  quantityField.dispatchEvent(new Event("input", { bubbles: true }));
+});
+
+document.getElementById("quantity-down").addEventListener("click", () => {
+  const current = Number(quantityField.value) || 1;
+  quantityField.value = Math.max(1, Math.ceil(current) - 1);
+  quantityField.dispatchEvent(new Event("input", { bubbles: true }));
+});
+
 document.getElementById("order-form").querySelectorAll("input").forEach(input => {
   input.addEventListener("input", () => {
     setFieldError(input.id, "");
