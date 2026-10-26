@@ -448,7 +448,18 @@ function renderProducts() {
   const grid = document.getElementById("product-grid");
   const empty = document.getElementById("empty-message");
   const ids = getFavouriteIds();
-  const products = showingFavouritesOnly ? rojjAllProducts.filter(p => ids.includes(String(p.id))) : rojjAllProducts;
+  renderCategoryFilters();
+
+const products = rojjAllProducts.filter(p => {
+  const matchesFavourite =
+    !showingFavouritesOnly || ids.includes(String(p.id));
+
+  const matchesCategory =
+    selectedCategory === "All" ||
+    String(p.category || "").trim() === selectedCategory;
+
+  return matchesFavourite && matchesCategory;
+});
 
   document.getElementById("favourites-toolbar").hidden = !showingFavouritesOnly;
   document.getElementById("products-intro").textContent = showingFavouritesOnly
