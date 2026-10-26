@@ -247,7 +247,13 @@ footer p{margin:5px}
       <input id="customer-landmark" name="landmark" maxlength="150" placeholder="Nearby landmark, if any">
 
       <label for="order-quantity">Quantity *</label>
-      <input id="order-quantity" name="quantity" type="number" inputmode="numeric" min="1" max="10" value="1" required>
+      <div class="quantity-control">
+  <input id="order-quantity" name="quantity" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" required>
+  <div class="quantity-stepper">
+    <button type="button" id="quantity-up" aria-label="Increase quantity">▲</button>
+    <button type="button" id="quantity-down" aria-label="Decrease quantity">▼</button>
+  </div>
+</div>
       <p class="order-field-error" id="order-quantity-error"></p>
       <div id="order-total-box" style="margin-top:14px;padding:14px 16px;background:#f5e8e1;border:1px solid #e4c9bc;border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
         <span style="font-weight:600;color:#4A3532;">Total Price</span>
