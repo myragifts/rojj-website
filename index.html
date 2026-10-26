@@ -1,940 +1,530 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#F8F4EE">
-
-  <title>ROJJ – Wear Your Colours</title>
-  <meta name="description" content="Discover colourful handmade Indian jewellery by ROJJ. Wear Your Colours.">
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --terracotta: #B86F5A;
-      --rose: #CFA3A0;
-      --brown: #4A3532;
-      --ivory: #F8F4EE;
-      --sand: #EAE1D7;
-      --white: #FFFFFF;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--ivory);
-      color: var(--brown);
-    }
-
-    header {
-      padding: 22px 20px;
-      text-align: center;
-      background: var(--white);
-      border-bottom: 1px solid #eee5dc;
-    }
-
-    .logo {
-      margin: 0;
-      font-size: 42px;
-      letter-spacing: 8px;
-      color: var(--terracotta);
-    }
-
-    .tagline {
-      margin-top: 8px;
-      letter-spacing: 3px;
-      font-size: 12px;
-    }
-
-    .header-actions {
-      display: flex;
-      justify-content: center;
-      margin-top: 16px;
-    }
-
-    .favourites-top-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid var(--rose);
-      background: var(--ivory);
-      color: var(--brown);
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .favourites-top-button:hover,
-    .favourites-top-button[aria-pressed="true"] {
-      background: var(--terracotta);
-      color: white;
-    }
-
-    .favourite-count {
-      display: inline-flex;
-      min-width: 22px;
-      height: 22px;
-      padding: 0 6px;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      background: white;
-      color: var(--terracotta);
-      font-size: 12px;
-    }
-
-    .hero {
-      text-align: center;
-      padding: 75px 20px;
-      background: var(--sand);
-    }
-
-    .hero h2 {
-      font-size: 40px;
-      margin: 0 0 15px;
-    }
-
-    .hero p {
-      font-size: 17px;
-      line-height: 1.8;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .section {
-      padding: 45px 20px;
-      text-align: center;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    .section-heading {
-      font-size: 30px;
-      margin: 0 0 12px;
-    }
-
-    .section-intro {
-      color: #76635e;
-      line-height: 1.7;
-      margin-bottom: 30px;
-    }
-
-    #loading {
-      padding: 25px;
-      color: #76635e;
-    }
-
-    #error-message {
-      display: none;
-      padding: 20px;
-      color: #9a3328;
-      background: #fff0ed;
-      border-radius: 8px;
-      margin: 20px auto;
-      max-width: 600px;
-    }
-
-    #empty-message {
-      display: none;
-      padding: 25px;
-      background: white;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 25px auto;
-    }
-
-
-    .collection-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 18px;
-      text-align: left;
-    }
-
-    .collection-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 145px;
-      padding: 24px 18px;
-      border-radius: 12px;
-      border: 1px solid #eee5dc;
-      background: var(--white);
-      color: var(--brown);
-      text-decoration: none;
-      box-shadow: 0 4px 16px rgba(74, 53, 50, 0.05);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .collection-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 22px rgba(74, 53, 50, 0.10);
-    }
-
-    .collection-card h3 {
-      margin: 0 0 8px;
-      color: var(--terracotta);
-      font-size: 19px;
-    }
-
-    .collection-card p {
-      margin: 0;
-      color: #76635e;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    #collections-loading,
-    #collections-error {
-      padding: 18px;
-      color: #76635e;
-    }
-
-    #collections-error {
-      display: none;
-      color: #9a3328;
-      background: #fff0ed;
-      border-radius: 8px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 24px;
-      text-align: left;
-    }
-
-    .product {
-      background: var(--white);
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid #eee5dc;
-      box-shadow: 0 4px 16px rgba(74, 53, 50, 0.05);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .product-image {
-      width: 100%;
-      height: 260px;
-      object-fit: cover;
-      background: var(--sand);
-      display: block;
-    }
-
-    .image-placeholder {
-      height: 260px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background: var(--sand);
-      color: var(--terracotta);
-      font-size: 25px;
-      letter-spacing: 5px;
-    }
-
-    .product-details {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-
-    .product-category {
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--terracotta);
-      margin-bottom: 8px;
-    }
-
-    .product h3 {
-      font-size: 19px;
-      margin: 0 0 10px;
-      line-height: 1.4;
-    }
-
-    .description {
-      color: #76635e;
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 0 0 15px;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: auto;
-    }
-
-    .price {
-      font-size: 22px;
-      color: var(--terracotta);
-      font-weight: bold;
-    }
-
-    .mrp {
-      color: #958681;
-      font-size: 14px;
-      text-decoration: line-through;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 1px;
-      padding: 5px 8px;
-      margin-bottom: 10px;
-      background: #f5e4dc;
-      color: var(--brown);
-      border-radius: 4px;
-      align-self: flex-start;
-    }
-
-    .button {
-      display: inline-block;
-      text-align: center;
-      padding: 13px 18px;
-      background: var(--terracotta);
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      margin-top: 18px;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .button:hover {
-      background: var(--brown);
-    }
-
-    .button:focus-visible {
-      outline: 3px solid var(--brown);
-      outline-offset: 3px;
-    }
-
-    .product .button {
-      width: 100%;
-    }
-
-    .favourite-button {
-      width: 100%;
-      margin-top: 12px;
-      padding: 11px 14px;
-      border: 1px solid var(--rose);
-      border-radius: 6px;
-      background: white;
-      color: var(--brown);
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .favourite-button:hover,
-    .favourite-button.is-saved {
-      background: #f8e9e7;
-      color: #9f3e46;
-      border-color: #d9a3a5;
-    }
-
-    .favourites-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 0 0 20px;
-    }
-
-    .back-to-products {
-      border: 2px solid var(--terracotta);
-      background: var(--terracotta);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      padding: 13px 20px;
-      border-radius: 999px;
-      font-size: 15px;
-      box-shadow: 0 4px 12px rgba(74, 53, 50, .18);
-      transition: transform .15s ease, background .15s ease;
-    }
-    .back-to-products:hover { background: var(--brown); border-color: var(--brown); transform: translateY(-1px); }
-    .favourites-toolbar { padding: 16px; background: #fff; border: 1px solid var(--rose); border-radius: 14px; }
-
-    .order-modal[hidden] { display: none !important; }
-    .order-modal { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 18px; background: rgba(35, 24, 22, .62); }
-    .order-modal-panel { position: relative; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; background: #fff; border-radius: 18px; padding: 26px; text-align: left; box-shadow: 0 16px 50px rgba(0,0,0,.25); }
-    .order-modal-panel h2 { margin: 0 34px 8px 0; color: var(--brown); }
-    .order-modal-panel p { line-height: 1.5; }
-    .order-close { position: absolute; right: 14px; top: 10px; border: 0; background: #f5e9e5; border-radius: 50%; width: 38px; height: 38px; font-size: 24px; cursor: pointer; }
-    .order-form label { display: block; font-weight: bold; margin: 13px 0 6px; }
-    .order-form input, .order-form textarea { width: 100%; padding: 12px; border: 1px solid #d8c9c0; border-radius: 8px; font: inherit; }
-    .order-form textarea { min-height: 78px; resize: vertical; }
-    .order-submit { width: 100%; margin-top: 18px; padding: 14px; border: 0; border-radius: 9px; background: #238b52; color: white; font-size: 16px; font-weight: bold; cursor: pointer; }
-    .order-submit:disabled { opacity: .65; cursor: wait; }
-
-    .story {
-      background: var(--white);
-      padding: 45px 20px;
-      text-align: center;
-      line-height: 1.8;
-    }
-
-    .story p {
-      max-width: 650px;
-      margin: 15px auto;
-    }
-
-    footer {
-      padding: 28px 20px;
-      text-align: center;
-      background: var(--brown);
-      color: white;
-      line-height: 1.8;
-    }
-
-    footer p {
-      margin: 5px;
-    }
-
-    @media (max-width: 800px) {
-      .collection-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .product-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-      }
-
-      .product-image,
-      .image-placeholder {
-        height: 220px;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .collection-grid {
-        grid-template-columns: 1fr;
-        max-width: 380px;
-        margin: auto;
-      }
-
-      .collection-card {
-        min-height: 110px;
-      }
-
-      .logo {
-        font-size: 36px;
-      }
-
-      .hero {
-        padding: 55px 18px;
-      }
-
-      .hero h2 {
-        font-size: 30px;
-      }
-
-      .hero p {
-        font-size: 15px;
-      }
-
-      .section {
-        padding: 35px 14px;
-      }
-
-      .section-heading {
-        font-size: 25px;
-      }
-
-      .product-grid {
-        grid-template-columns: 1fr;
-        max-width: 380px;
-        margin: auto;
-      }
-
-      .product-image,
-      .image-placeholder {
-        height: 280px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F8F4EE">
+<title>ROJJ – Wear Your Colours</title>
+<meta name="description" content="Discover colourful handmade Indian jewellery by ROJJ. Wear Your Colours.">
+
+<style>
+*{box-sizing:border-box}
+:root{--terracotta:#B86F5A;--rose:#CFA3A0;--brown:#4A3532;--ivory:#F8F4EE;--sand:#EAE1D7;--white:#FFFFFF}
+body{margin:0;font-family:Arial,sans-serif;background:var(--ivory);color:var(--brown)}
+header{padding:22px 20px;text-align:center;background:white;border-bottom:1px solid #eee5dc}
+.logo{margin:0;font-size:42px;letter-spacing:8px;color:var(--terracotta)}
+.tagline{margin-top:8px;letter-spacing:3px;font-size:12px}
+.header-actions{display:flex;justify-content:center;margin-top:16px}
+.favourites-top-button{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--rose);background:var(--ivory);color:var(--brown);border-radius:999px;padding:10px 16px;font-weight:bold;cursor:pointer;font-size:14px}
+.favourites-top-button:hover,.favourites-top-button[aria-pressed="true"]{background:var(--terracotta);color:white}
+.favourite-count{display:inline-flex;min-width:22px;height:22px;padding:0 6px;align-items:center;justify-content:center;border-radius:999px;background:white;color:var(--terracotta);font-size:12px}
+.hero{text-align:center;padding:75px 20px;background:var(--sand)}
+.hero h2{font-size:40px;margin:0 0 15px}
+.hero p{font-size:17px;line-height:1.8;max-width:600px;margin:0 auto 22px}
+.section{padding:45px 20px;text-align:center;max-width:1200px;margin:auto}
+.section-heading{font-size:30px;margin:0 0 12px}
+.section-intro{color:#76635e;line-height:1.7;margin-bottom:30px}
+#loading,#collections-loading{padding:25px;color:#76635e}
+#error-message,#collections-error{display:none;padding:20px;color:#9a3328;background:#fff0ed;border-radius:8px;margin:20px auto;max-width:600px}
+#empty-message{display:none;padding:25px;background:white;border-radius:10px;max-width:500px;margin:25px auto}
+.collection-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;text-align:left}
+.collection-card{display:flex;flex-direction:column;justify-content:center;min-height:145px;padding:24px 18px;border-radius:12px;border:1px solid #eee5dc;background:white;color:var(--brown);text-decoration:none;box-shadow:0 4px 16px #4a35320d;transition:transform .2s}
+.collection-card:hover{transform:translateY(-3px)}
+.collection-card h3{margin:0 0 8px;color:var(--terracotta);font-size:19px}
+.collection-card p{margin:0;color:#76635e;font-size:13px;line-height:1.6}
+.product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;text-align:left}
+.product{background:white;border-radius:12px;overflow:hidden;border:1px solid #eee5dc;box-shadow:0 4px 16px #4a35320d;display:flex;flex-direction:column}
+.product-image,.image-placeholder{width:100%;height:260px;object-fit:cover;background:var(--sand);display:flex;justify-content:center;align-items:center;text-align:center;color:var(--terracotta);font-size:25px;letter-spacing:5px}
+.product-image{display:block}
+.product-details{padding:20px;display:flex;flex-direction:column;flex-grow:1}
+.product-category{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--terracotta);margin-bottom:8px}
+.product h3{font-size:19px;margin:0 0 10px;line-height:1.4}
+.description{color:#76635e;font-size:14px;line-height:1.6;margin:0 0 15px}
+.price-row{display:flex;align-items:center;flex-wrap:wrap;gap:9px;margin-top:auto}
+.price{font-size:22px;color:var(--terracotta);font-weight:bold}
+.mrp{color:#958681;font-size:14px;text-decoration:line-through}
+.badge{display:inline-block;font-size:10px;letter-spacing:1px;padding:5px 8px;margin-bottom:10px;background:#f5e4dc;color:var(--brown);border-radius:4px;align-self:flex-start}
+.button{display:inline-block;text-align:center;padding:13px 18px;background:var(--terracotta);color:white;text-decoration:none;border-radius:6px;margin-top:18px;font-weight:bold;border:0;cursor:pointer;font-size:14px}
+.button:hover{background:var(--brown)}
+.product .button,.favourite-button{width:100%}
+.favourite-button{margin-top:12px;padding:11px 14px;border:1px solid var(--rose);border-radius:6px;background:white;color:var(--brown);cursor:pointer;font-weight:bold;font-size:14px}
+.favourite-button:hover,.favourite-button.is-saved{background:#f8e9e7;color:#9f3e46;border-color:#d9a3a5}
+.favourites-toolbar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:0 0 20px;padding:16px;background:white;border:1px solid var(--rose);border-radius:14px}
+.back-to-products{border:2px solid var(--terracotta);background:var(--terracotta);color:white;font-weight:bold;cursor:pointer;padding:13px 20px;border-radius:999px;font-size:15px;box-shadow:0 4px 12px #4a35322e}
+.back-to-products:hover{background:var(--brown);border-color:var(--brown)}
+.order-modal[hidden]{display:none!important}
+.order-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;background:#2318169e}
+.order-modal-panel{position:relative;width:100%;max-width:540px;max-height:92vh;overflow-y:auto;background:white;border-radius:18px;padding:26px;text-align:left;box-shadow:0 16px 50px #0004}
+.order-modal-panel h2{margin:0 34px 8px 0;color:var(--brown)}
+.order-modal-panel p{line-height:1.5}
+.order-close{position:absolute;right:14px;top:10px;border:0;background:#f5e9e5;border-radius:50%;width:38px;height:38px;font-size:24px;cursor:pointer}
+.order-form label{display:block;font-weight:bold;margin:13px 0 6px}
+.order-form input,.order-form textarea{width:100%;padding:12px;border:1px solid #d8c9c0;border-radius:8px;font:inherit;background:white;color:#222}
+.order-form input:focus,.order-form textarea:focus{outline:2px solid var(--rose);outline-offset:1px}
+.order-form textarea{min-height:65px;resize:vertical}
+.optional-label{font-weight:normal;color:#76635e;font-size:12px}
+.form-error{display:none;color:#a12626;font-size:13px;margin:7px 0 0}
+.order-submit{width:100%;margin-top:18px;padding:14px;border:0;border-radius:9px;background:#238b52;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+.order-submit:disabled{opacity:.65;cursor:wait}
+.story{background:white;padding:45px 20px;text-align:center;line-height:1.8}
+.story p{max-width:650px;margin:15px auto}
+footer{padding:28px 20px;text-align:center;background:var(--brown);color:white;line-height:1.8}
+footer p{margin:5px}
+@media(max-width:800px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.product-image,.image-placeholder{height:220px}}
+@media(max-width:520px){.collection-grid{grid-template-columns:1fr;max-width:380px;margin:auto}.collection-card{min-height:110px}.logo{font-size:36px}.hero{padding:55px 18px}.hero h2{font-size:30px}.hero p{font-size:15px}.section{padding:35px 14px}.section-heading{font-size:25px}.product-grid{grid-template-columns:1fr;max-width:380px;margin:auto}.product-image,.image-placeholder{height:280px}.order-modal{padding:8px}.order-modal-panel{padding:22px 18px;max-height:96vh}}
+</style>
 </head>
-
 <body>
 
-  <header>
-    <h1 class="logo">ROJJ</h1>
-    <div class="tagline">WEAR YOUR COLOURS</div>
-    <div class="header-actions">
-      <button type="button" class="favourites-top-button" id="my-favourites-button" aria-pressed="false">
-        <span aria-hidden="true">♡</span> My Favourites
-        <span class="favourite-count" id="favourite-count">0</span>
-      </button>
-    </div>
-  </header>
-
-  <section class="hero">
-    <h2>Celebrate Your Colours</h2>
-    <p>
-      Discover the beauty of handmade Indian jewellery.
-      Colourful designs, crafted with love.
-    </p>
-    <a href="#collections" class="button">Explore Our Collections</a>
-  </section>
-
-
-  <section class="section" id="collections">
-    <h2 class="section-heading">Explore Our Collections</h2>
-    <p class="section-intro">
-      Discover jewellery for every occasion, mood and colour.
-    </p>
-    <div id="collections-loading">Loading collections...</div>
-    <div id="collections-error">
-      Collections could not be loaded. Please try again later.
-    </div>
-    <div class="collection-grid" id="collections-grid"></div>
-  </section>
-
-  <section class="section" id="products">
-    <h2 class="section-heading">Discover ROJJ</h2>
-    <p class="section-intro" id="products-intro">
-      Find something beautiful to match your colours and your style.
-    </p>
-
-    <div class="favourites-toolbar" id="favourites-toolbar" hidden>
-      <span id="favourites-status">Your saved ROJJ products</span>
-      <button type="button" class="back-to-products" id="back-to-products">← Back to all products</button>
-    </div>
-
-    <div id="loading">Loading our collection...</div>
-
-    <div id="error-message">
-      We could not load our collection right now. Please try again later.
-    </div>
-
-    <div id="empty-message">
-      <h3>Our Collection Is Coming Soon</h3>
-      <p>We are preparing something beautiful for you.</p>
-    </div>
-
-    <div class="product-grid" id="product-grid"></div>
-  </section>
-
-  <section class="story">
-    <h2>Our ROJJ Story</h2>
-    <p>
-      We believe jewellery is a beautiful way to express your personality.
-      Discover colourful designs and celebrate your individuality with ROJJ.
-    </p>
-    <strong>ROJJ — Wear Your Colours.</strong>
-  </section>
-
-  <footer>
-    <p><strong>ROJJ</strong></p>
-    <p>Wear Your Colours.</p>
-    <p>© <span id="year"></span> ROJJ. All rights reserved.</p>
-  </footer>
-
-  <div class="order-modal" id="order-modal" hidden>
-    <div class="order-modal-panel" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
-      <button type="button" class="order-close" id="order-close" aria-label="Close">×</button>
-      <h2 id="order-modal-title">Complete Your ROJJ Order</h2>
-      <p id="order-product-summary">Please enter your details before continuing to WhatsApp.</p>
-      <form class="order-form" id="order-form">
-        <label for="customer-name">Your name *</label><input id="customer-name" name="name" autocomplete="name" required maxlength="80" placeholder="Enter your full name">
-        <label for="customer-phone">WhatsApp / phone number *</label><input id="customer-phone" name="phone" autocomplete="tel" required type="tel" maxlength="20" placeholder="Enter your phone number">
-        <label for="customer-address">Delivery address *</label><textarea id="customer-address" name="address" autocomplete="street-address" required maxlength="500" placeholder="House, street, area, city, PIN code"></textarea>
-        <label for="order-quantity">Quantity *</label><input id="order-quantity" name="quantity" type="number" min="1" max="99" value="1" required>
-        <button class="order-submit" id="order-submit" type="submit">Continue to WhatsApp to Order</button>
-      </form>
-    </div>
+<header>
+  <h1 class="logo">ROJJ</h1>
+  <div class="tagline">WEAR YOUR COLOURS</div>
+  <div class="header-actions">
+    <button type="button" class="favourites-top-button" id="my-favourites-button" aria-pressed="false">
+      <span aria-hidden="true">♡</span> My Favourites
+      <span class="favourite-count" id="favourite-count">0</span>
+    </button>
   </div>
+</header>
 
-  <script>
-    // ROJJ Google Sheets API
-    const ROJJ_API_URL =
-      "https://script.google.com/macros/s/AKfycbyHFBZTUBauy9xfAhP7OEUsbEZzeHp523P2dWm5EHGLHvwYrXKt_eUSLIAwNSaspq0i/exec";
+<section class="hero">
+  <h2>Celebrate Your Colours</h2>
+  <p>Discover the beauty of handmade Indian jewellery. Colourful designs, crafted with love.</p>
+  <a href="#collections" class="button">Explore Our Collections</a>
+</section>
 
-    // Add your official ROJJ WhatsApp number later.
-    // Use country code + number, without +, spaces or dashes.
-    // Example format for India: 919876543210
-    const ROJJ_WHATSAPP_NUMBER = "919836697502";
-    const ROJJ_FAVOURITES_KEY = "rojj_favourite_product_ids_v1";
-    let rojjAllProducts = [];
-    let showingFavouritesOnly = false;
-    let rojjSelectedOrderProduct = null;
+<section class="section" id="collections">
+  <h2 class="section-heading">Explore Our Collections</h2>
+  <p class="section-intro">Discover jewellery for every occasion, mood and colour.</p>
+  <div id="collections-loading">Loading collections...</div>
+  <div id="collections-error">Collections could not be loaded. Please try again later.</div>
+  <div class="collection-grid" id="collections-grid"></div>
+</section>
 
-    function getFavouriteIds() {
-      try {
-        const saved = JSON.parse(localStorage.getItem(ROJJ_FAVOURITES_KEY) || "[]");
-        return Array.isArray(saved) ? saved.map(String) : [];
-      } catch (error) {
-        return [];
-      }
-    }
+<section class="section" id="products">
+  <h2 class="section-heading">Discover ROJJ</h2>
+  <p class="section-intro" id="products-intro">Find something beautiful to match your colours and your style.</p>
+  <div class="favourites-toolbar" id="favourites-toolbar" hidden>
+    <span id="favourites-status">Your saved ROJJ products</span>
+    <button type="button" class="back-to-products" id="back-to-products">← Back to all products</button>
+  </div>
+  <div id="loading">Loading our collection...</div>
+  <div id="error-message">We could not load our collection right now. Please try again later.</div>
+  <div id="empty-message">
+    <h3>Our Collection Is Coming Soon</h3>
+    <p>We are preparing something beautiful for you.</p>
+  </div>
+  <div class="product-grid" id="product-grid"></div>
+</section>
 
-    function saveFavouriteIds(ids) {
-      try {
-        localStorage.setItem(ROJJ_FAVOURITES_KEY, JSON.stringify(ids));
-        updateFavouriteCount();
-        return true;
-      } catch (error) {
-        alert("Your browser could not save favourites. Please check your browser storage settings.");
-        return false;
-      }
-    }
+<section class="story">
+  <h2>Our ROJJ Story</h2>
+  <p>We believe jewellery is a beautiful way to express your personality. Discover colourful designs and celebrate your individuality with ROJJ.</p>
+  <strong>ROJJ — Wear Your Colours.</strong>
+</section>
 
-    function isFavourite(productId) {
-      return getFavouriteIds().includes(String(productId));
-    }
+<footer>
+  <p><strong>ROJJ</strong></p>
+  <p>Wear Your Colours.</p>
+  <p>© <span id="year"></span> ROJJ. All rights reserved.</p>
+</footer>
 
-    function updateFavouriteCount() {
-      const count = getFavouriteIds().length;
-      const badge = document.getElementById("favourite-count");
-      if (badge) badge.textContent = String(count);
-      const topButton = document.getElementById("my-favourites-button");
-      if (topButton) topButton.setAttribute("aria-pressed", String(showingFavouritesOnly));
-    }
+<div class="order-modal" id="order-modal" hidden>
+  <div class="order-modal-panel" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
+    <button type="button" class="order-close" id="order-close" aria-label="Close">×</button>
+    <h2 id="order-modal-title">Complete Your ROJJ Order</h2>
+    <p id="order-product-summary">Please enter your details before continuing to WhatsApp.</p>
+    <form class="order-form" id="order-form" novalidate>
+      <label for="customer-name">Your name *</label>
+      <input id="customer-name" name="name" autocomplete="name" required maxlength="80" placeholder="Enter your full name">
 
-    function toggleFavourite(product) {
-      const id = String(product.id);
-      let ids = getFavouriteIds();
-      if (ids.includes(id)) {
-        ids = ids.filter(function(savedId) { return savedId !== id; });
-      } else {
-        ids.push(id);
-      }
-      if (!saveFavouriteIds(ids)) return;
-      renderProducts();
-    }
+      <label for="customer-phone">WhatsApp / mobile number *</label>
+      <input id="customer-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" pattern="[6-9][0-9]{9}" required minlength="10" maxlength="10" placeholder="Enter 10-digit mobile number" aria-describedby="phone-error">
+      <p class="form-error" id="phone-error"></p>
 
-    function renderProducts() {
-      const grid = document.getElementById("product-grid");
-      const empty = document.getElementById("empty-message");
-      const intro = document.getElementById("products-intro");
-      const toolbar = document.getElementById("favourites-toolbar");
-      const status = document.getElementById("favourites-status");
-      const error = document.getElementById("error-message");
-      const loading = document.getElementById("loading");
-      const ids = getFavouriteIds();
-      const products = showingFavouritesOnly
-        ? rojjAllProducts.filter(function(product) { return ids.includes(String(product.id)); })
-        : rojjAllProducts;
+      <label for="customer-village">Village / Town *</label>
+      <input id="customer-village" name="village" autocomplete="address-level3" required maxlength="100" placeholder="Enter village or town">
 
-      toolbar.hidden = !showingFavouritesOnly;
-      intro.textContent = showingFavouritesOnly
-        ? "Your favourite ROJJ pieces, saved on this device."
-        : "Find something beautiful to match your colours and your style.";
-      status.textContent = products.length
-        ? products.length + (products.length === 1 ? " saved product" : " saved products")
-        : "You haven't saved any favourites yet.";
-      loading.style.display = "none";
-      error.style.display = "none";
-      empty.style.display = products.length === 0 ? "block" : "none";
-      if (showingFavouritesOnly && products.length === 0) {
-        empty.querySelector("h3").textContent = "No Favourites Yet";
-        empty.querySelector("p").textContent = "Tap ♡ Add to Favourites on any product to save it here.";
-      } else {
-        empty.querySelector("h3").textContent = "Our Collection Is Coming Soon";
-        empty.querySelector("p").textContent = "We are preparing something beautiful for you.";
-      }
-      const fragment = document.createDocumentFragment();
-      products.forEach(function(product) { fragment.appendChild(createProductCard(product)); });
-      grid.replaceChildren(fragment);
-      updateFavouriteCount();
-    }
+      <label for="customer-post-office">Post Office *</label>
+      <input id="customer-post-office" name="postOffice" required maxlength="100" placeholder="Enter post office">
 
-    document.getElementById("my-favourites-button").addEventListener("click", function() {
-      showingFavouritesOnly = !showingFavouritesOnly;
-      renderProducts();
-      document.getElementById("products").scrollIntoView({ behavior: "smooth" });
-    });
+      <label for="customer-ps">Police Station (P.S.) *</label>
+      <input id="customer-ps" name="policeStation" required maxlength="100" placeholder="Enter police station">
 
-    document.getElementById("back-to-products").addEventListener("click", function() {
-      showingFavouritesOnly = false;
-      renderProducts();
-    });
+      <label for="customer-district">District *</label>
+      <input id="customer-district" name="district" autocomplete="address-level2" required maxlength="100" placeholder="Enter district">
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+      <label for="customer-state">State *</label>
+      <input id="customer-state" name="state" autocomplete="address-level1" required maxlength="100" placeholder="Enter state">
 
-    function openOrderModal(product) {
-      rojjSelectedOrderProduct = product;
-      document.getElementById("order-product-summary").textContent =
-        (product.name || "ROJJ Jewellery") + " — ₹" + Number(product.price || 0).toLocaleString("en-IN") + " each. Please enter your details.";
-      document.getElementById("order-quantity").value = "1";
-      document.getElementById("order-modal").hidden = false;
-      document.body.style.overflow = "hidden";
-      document.getElementById("customer-name").focus();
-    }
-    function closeOrderModal() {
-      document.getElementById("order-modal").hidden = true;
-      document.body.style.overflow = "";
-    }
-    document.getElementById("order-close").addEventListener("click", closeOrderModal);
-    document.getElementById("order-modal").addEventListener("click", function(event) {
-      if (event.target.id === "order-modal") closeOrderModal();
-    });
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape" && !document.getElementById("order-modal").hidden) closeOrderModal();
-    });
-    document.getElementById("order-form").addEventListener("submit", function(event) {
-      event.preventDefault();
-      if (!rojjSelectedOrderProduct) return;
-      const name = document.getElementById("customer-name").value.trim();
-      const phone = document.getElementById("customer-phone").value.trim();
-      const address = document.getElementById("customer-address").value.trim();
-      const quantity = Math.max(1, Math.min(99, parseInt(document.getElementById("order-quantity").value, 10) || 1));
-      if (!name || !phone || !address) { alert("Please complete all required details."); return; }
-      const product = rojjSelectedOrderProduct;
-      const unitPrice = Number(product.price || 0);
-      const total = unitPrice * quantity;
-      const message = "Hello ROJJ! I would like to place an order.\n\n" +
-        "PRODUCT DETAILS\nProduct: " + (product.name || "ROJJ Jewellery") +
-        "\nProduct ID: " + (product.id || "N/A") +
-        "\nCategory: " + (product.category || "Jewellery") +
-        "\nQuantity: " + quantity +
-        "\nPrice each: ₹" + unitPrice.toLocaleString("en-IN") +
-        "\nTOTAL: ₹" + total.toLocaleString("en-IN") +
-        "\n\nCUSTOMER DETAILS\nName: " + name +
-        "\nPhone: " + phone +
-        "\nDelivery address: " + address +
-        "\n\nPlease confirm availability, delivery charges and payment instructions. I will share payment proof after paying.";
-      const whatsappUrl = "https://wa.me/" + ROJJ_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
-      const submit = document.getElementById("order-submit");
-      submit.disabled = true;
-      submit.textContent = "Opening WhatsApp…";
-      const win = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-      if (!win) window.location.href = whatsappUrl;
-      closeOrderModal();
-      submit.disabled = false;
-      submit.textContent = "Continue to WhatsApp to Order";
-    });
+      <label for="customer-pin">PIN Code *</label>
+      <input id="customer-pin" name="pin" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[1-9][0-9]{5}" minlength="6" maxlength="6" required placeholder="Enter 6-digit PIN code">
 
-    function makeElement(tag, className, text) {
-      const element = document.createElement(tag);
+      <label for="customer-landmark">Landmark <span class="optional-label">(Optional)</span></label>
+      <input id="customer-landmark" name="landmark" maxlength="150" placeholder="Nearby landmark, if any">
 
-      if (className) {
-        element.className = className;
-      }
+      <label for="order-quantity">Quantity *</label>
+      <input id="order-quantity" name="quantity" type="number" inputmode="numeric" min="1" max="10" value="1" required>
 
-      if (text !== undefined && text !== null) {
-        element.textContent = text;
-      }
+      <button class="order-submit" id="order-submit" type="submit">Continue to WhatsApp to Order</button>
+    </form>
+  </div>
+</div>
 
-      return element;
-    }
+<script>
+const ROJJ_API_URL = "https://script.google.com/macros/s/AKfycbyHFBZTUBauy9xfAhP7OEUsbEZzeHp523P2dWm5EHGLHvwYrXKt_eUSLIAwNSaspq0i/exec";
+const ROJJ_WHATSAPP_NUMBER = "919836697502";
+const ROJJ_FAVOURITES_KEY = "rojj_favourite_product_ids_v1";
+let rojjAllProducts = [];
+let showingFavouritesOnly = false;
+let rojjSelectedOrderProduct = null;
 
-    function createProductCard(product) {
-      const card = makeElement("article", "product");
+function getFavouriteIds() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(ROJJ_FAVOURITES_KEY) || "[]");
+    return Array.isArray(saved) ? saved.map(String) : [];
+  } catch (error) { return []; }
+}
 
-      if (product.images && product.images.length > 0) {
-        const image = makeElement("img", "product-image");
-        image.src = product.images[0];
-        image.alt = product.name || "ROJJ jewellery";
-        image.loading = "lazy";
-
-        image.onerror = function() {
-          const placeholder = makeElement(
-            "div",
-            "image-placeholder",
-            "ROJJ"
-          );
-          image.replaceWith(placeholder);
-        };
-
-        card.appendChild(image);
-      } else {
-        card.appendChild(
-          makeElement("div", "image-placeholder", "ROJJ")
-        );
-      }
-
-      const details = makeElement("div", "product-details");
-
-      if (product.newArrival) {
-        details.appendChild(
-          makeElement("span", "badge", "NEW ARRIVAL")
-        );
-      } else if (product.bestSeller) {
-        details.appendChild(
-          makeElement("span", "badge", "BEST SELLER")
-        );
-      } else if (product.featured) {
-        details.appendChild(
-          makeElement("span", "badge", "FEATURED")
-        );
-      }
-
-      details.appendChild(
-        makeElement("div", "product-category", product.category || "Jewellery")
-      );
-
-      details.appendChild(
-        makeElement("h3", "", product.name || "ROJJ Jewellery")
-      );
-
-      if (product.description) {
-        details.appendChild(
-          makeElement("p", "description", product.description)
-        );
-      }
-
-      const priceRow = makeElement("div", "price-row");
-
-      priceRow.appendChild(
-        makeElement(
-          "span",
-          "price",
-          "₹" + Number(product.price || 0).toLocaleString("en-IN")
-        )
-      );
-
-      if (Number(product.mrp) > Number(product.price)) {
-        priceRow.appendChild(
-          makeElement(
-            "span",
-            "mrp",
-            "₹" + Number(product.mrp).toLocaleString("en-IN")
-          )
-        );
-      }
-
-      details.appendChild(priceRow);
-
-      const button = makeElement("button", "button", "Order on WhatsApp");
-      button.type = "button";
-      button.style.border = "0";
-      button.style.cursor = "pointer";
-      button.addEventListener("click", function() { openOrderModal(product); });
-      details.appendChild(button);
-
-      const favouriteButton = makeElement(
-        "button",
-        "favourite-button" + (isFavourite(product.id) ? " is-saved" : ""),
-        isFavourite(product.id) ? "♥ Added to Favourites" : "♡ Add to Favourites"
-      );
-      favouriteButton.type = "button";
-      favouriteButton.setAttribute("aria-pressed", String(isFavourite(product.id)));
-      favouriteButton.addEventListener("click", function() {
-        toggleFavourite(product);
-      });
-      details.appendChild(favouriteButton);
-      card.appendChild(details);
-
-      return card;
-    }
-
-
-    function createCollectionCard(collection) {
-      const card = makeElement("a", "collection-card");
-      card.href = "#products";
-      card.setAttribute("aria-label", "Explore " + (collection.name || "ROJJ collection"));
-      card.appendChild(makeElement("h3", "", collection.name || "ROJJ Collection"));
-
-      card.appendChild(makeElement(
-        "p",
-        "",
-        collection.description || "Discover this ROJJ collection."
-      ));
-
-      card.addEventListener("click", function() {
-        const productSection = document.getElementById("products");
-        if (productSection) {
-          productSection.scrollIntoView({ behavior: "smooth" });
-        }
-      });
-
-      return card;
-    }
-
-    async function loadROJJCollections() {
-      const loading = document.getElementById("collections-loading");
-      const error = document.getElementById("collections-error");
-      const grid = document.getElementById("collections-grid");
-
-      try {
-        const response = await fetch(ROJJ_API_URL + "?action=collections");
-        if (!response.ok) {
-          throw new Error("The collections API returned an error.");
-        }
-
-        const data = await response.json();
-        if (!data.success || !Array.isArray(data.collections)) {
-          throw new Error("The collection data format is invalid.");
-        }
-
-        loading.style.display = "none";
-
-        if (data.collections.length === 0) {
-          grid.appendChild(makeElement("p", "", "Our collections are coming soon."));
-          return;
-        }
-
-        const fragment = document.createDocumentFragment();
-        data.collections.forEach(function(collection) {
-          fragment.appendChild(createCollectionCard(collection));
-        });
-        grid.replaceChildren(fragment);
-      } catch (errorDetails) {
-        console.error("ROJJ collections loading error:", errorDetails);
-        loading.style.display = "none";
-        error.style.display = "block";
-      }
-    }
-
-    async function loadROJJProducts() {
-      const loading = document.getElementById("loading");
-      const error = document.getElementById("error-message");
-      const empty = document.getElementById("empty-message");
-      const grid = document.getElementById("product-grid");
-
-      try {
-        const response = await fetch(ROJJ_API_URL + "?action=products");
-
-        if (!response.ok) {
-          throw new Error("The product API returned an error.");
-        }
-
-        const data = await response.json();
-
-        if (!data.success || !Array.isArray(data.products)) {
-          throw new Error("The product data format is invalid.");
-        }
-
-        loading.style.display = "none";
-
-        if (data.products.length === 0) {
-          empty.style.display = "block";
-          return;
-        }
-
-        rojjAllProducts = data.products;
-        renderProducts();
-
-      } catch (errorDetails) {
-        console.error("ROJJ product loading error:", errorDetails);
-        loading.style.display = "none";
-        error.style.display = "block";
-      }
-    }
-
+function saveFavouriteIds(ids) {
+  try {
+    localStorage.setItem(ROJJ_FAVOURITES_KEY, JSON.stringify(ids));
     updateFavouriteCount();
-    loadROJJCollections();
-    loadROJJProducts();
-  </script>
+    return true;
+  } catch (error) {
+    alert("Your browser could not save favourites. Please check browser storage settings.");
+    return false;
+  }
+}
 
+function isFavourite(id) { return getFavouriteIds().includes(String(id)); }
+
+function updateFavouriteCount() {
+  document.getElementById("favourite-count").textContent = String(getFavouriteIds().length);
+  document.getElementById("my-favourites-button").setAttribute("aria-pressed", String(showingFavouritesOnly));
+}
+
+function toggleFavourite(product) {
+  const id = String(product.id);
+  let ids = getFavouriteIds();
+  ids = ids.includes(id) ? ids.filter(savedId => savedId !== id) : [...ids, id];
+  if (saveFavouriteIds(ids)) renderProducts();
+}
+
+function renderProducts() {
+  const grid = document.getElementById("product-grid");
+  const empty = document.getElementById("empty-message");
+  const ids = getFavouriteIds();
+  const products = showingFavouritesOnly ? rojjAllProducts.filter(p => ids.includes(String(p.id))) : rojjAllProducts;
+
+  document.getElementById("favourites-toolbar").hidden = !showingFavouritesOnly;
+  document.getElementById("products-intro").textContent = showingFavouritesOnly
+    ? "Your favourite ROJJ pieces, saved on this device."
+    : "Find something beautiful to match your colours and your style.";
+  document.getElementById("favourites-status").textContent = products.length
+    ? products.length + (products.length === 1 ? " saved product" : " saved products")
+    : "You haven't saved any favourites yet.";
+
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("error-message").style.display = "none";
+  empty.style.display = products.length ? "none" : "block";
+
+  if (showingFavouritesOnly && products.length === 0) {
+    empty.querySelector("h3").textContent = "No Favourites Yet";
+    empty.querySelector("p").textContent = "Tap ♡ Add to Favourites on any product to save it here.";
+  } else {
+    empty.querySelector("h3").textContent = "Our Collection Is Coming Soon";
+    empty.querySelector("p").textContent = "We are preparing something beautiful for you.";
+  }
+
+  const fragment = document.createDocumentFragment();
+  products.forEach(product => fragment.appendChild(createProductCard(product)));
+  grid.replaceChildren(fragment);
+  updateFavouriteCount();
+}
+
+document.getElementById("my-favourites-button").addEventListener("click", () => {
+  showingFavouritesOnly = !showingFavouritesOnly;
+  renderProducts();
+  document.getElementById("products").scrollIntoView({behavior:"smooth"});
+});
+
+document.getElementById("back-to-products").addEventListener("click", () => {
+  showingFavouritesOnly = false;
+  renderProducts();
+  document.getElementById("products").scrollIntoView({behavior:"smooth"});
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+function openOrderModal(product) {
+  rojjSelectedOrderProduct = product;
+  document.getElementById("order-product-summary").textContent =
+    (product.name || "ROJJ Jewellery") + " — ₹" +
+    Number(product.price || 0).toLocaleString("en-IN") +
+    " each. Please enter your details.";
+  document.getElementById("order-quantity").value = "1";
+  document.getElementById("phone-error").style.display = "none";
+  document.getElementById("phone-error").textContent = "";
+  document.getElementById("customer-phone").setCustomValidity("");
+  document.getElementById("order-modal").hidden = false;
+  document.body.style.overflow = "hidden";
+  document.getElementById("customer-name").focus();
+}
+
+function closeOrderModal() {
+  document.getElementById("order-modal").hidden = true;
+  document.body.style.overflow = "";
+}
+
+document.getElementById("order-close").addEventListener("click", closeOrderModal);
+document.getElementById("order-modal").addEventListener("click", event => {
+  if (event.target.id === "order-modal") closeOrderModal();
+});
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !document.getElementById("order-modal").hidden) closeOrderModal();
+});
+
+const phoneInput = document.getElementById("customer-phone");
+const phoneError = document.getElementById("phone-error");
+
+phoneInput.addEventListener("input", () => {
+  phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
+  phoneInput.setCustomValidity("");
+  phoneError.style.display = "none";
+  phoneError.textContent = "";
+});
+
+document.getElementById("customer-pin").addEventListener("input", function() {
+  this.value = this.value.replace(/\D/g, "").slice(0, 6);
+  this.setCustomValidity("");
+});
+
+document.getElementById("order-form").addEventListener("submit", event => {
+  event.preventDefault();
+  if (!rojjSelectedOrderProduct) return;
+
+  const name = document.getElementById("customer-name").value.trim();
+  const phone = phoneInput.value.trim();
+  const village = document.getElementById("customer-village").value.trim();
+  const postOffice = document.getElementById("customer-post-office").value.trim();
+  const policeStation = document.getElementById("customer-ps").value.trim();
+  const district = document.getElementById("customer-district").value.trim();
+  const state = document.getElementById("customer-state").value.trim();
+  const pin = document.getElementById("customer-pin").value.trim();
+  const landmark = document.getElementById("customer-landmark").value.trim();
+  const quantityInput = document.getElementById("order-quantity");
+  const quantity = Number(quantityInput.value);
+
+  phoneInput.setCustomValidity("");
+  phoneError.style.display = "none";
+  phoneError.textContent = "";
+
+  if (!/^[6-9][0-9]{9}$/.test(phone)) {
+    phoneInput.setCustomValidity("Enter exactly 10 digits, starting with 6, 7, 8 or 9.");
+    phoneError.textContent = "Please enter a valid 10-digit Indian mobile number.";
+    phoneError.style.display = "block";
+    phoneInput.reportValidity();
+    phoneInput.focus();
+    return;
+  }
+
+  const blockedPhones = new Set([
+    "1234567890", "0123456789", "9876543210", "0987654321",
+    "1122334455", "1234512345", "1111111111", "2222222222",
+    "3333333333", "4444444444", "5555555555", "6666666666",
+    "7777777777", "8888888888", "9999999999", "0000000000"
+  ]);
+
+  if (blockedPhones.has(phone) || /^(\d)\1{9}$/.test(phone) ||
+      /^(\d{2})\1{4}$/.test(phone) || /^(\d)\2(\d)\3(\d)\4(\d)\5(\d)\6$/.test(phone)) {
+    phoneInput.setCustomValidity("This number looks like a sample or invalid number. Enter your real mobile number.");
+    phoneError.textContent = "This number looks abnormal or like a sample number. Please enter your real mobile number.";
+    phoneError.style.display = "block";
+    phoneInput.reportValidity();
+    phoneInput.focus();
+    return;
+  }
+
+  if (!name || !village || !postOffice || !policeStation || !district || !state || !pin) {
+    alert("Please complete all required fields. Only Landmark is optional.");
+    return;
+  }
+
+  if (!/^[1-9][0-9]{5}$/.test(pin)) {
+    const pinInput = document.getElementById("customer-pin");
+    pinInput.setCustomValidity("Enter a valid 6-digit PIN code.");
+    pinInput.reportValidity();
+    pinInput.focus();
+    return;
+  }
+
+  if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
+    quantityInput.setCustomValidity("Quantity must be between 1 and 10.");
+    quantityInput.reportValidity();
+    quantityInput.focus();
+    return;
+  }
+  quantityInput.setCustomValidity("");
+
+  const product = rojjSelectedOrderProduct;
+  const unitPrice = Number(product.price || 0);
+  const total = unitPrice * quantity;
+
+  const message =
+    "Hello ROJJ! I would like to place an order.\n\n" +
+    "PRODUCT DETAILS\n" +
+    "Product: " + (product.name || "ROJJ Jewellery") + "\n" +
+    "Product ID: " + (product.id || "N/A") + "\n" +
+    "Category: " + (product.category || "Jewellery") + "\n" +
+    "Quantity: " + quantity + "\n" +
+    "Price each: ₹" + unitPrice.toLocaleString("en-IN") + "\n" +
+    "TOTAL: ₹" + total.toLocaleString("en-IN") + "\n\n" +
+    "CUSTOMER DETAILS\n" +
+    "Name: " + name + "\n" +
+    "Mobile: +91 " + phone + "\n" +
+    "Village / Town: " + village + "\n" +
+    "Post Office: " + postOffice + "\n" +
+    "Police Station (P.S.): " + policeStation + "\n" +
+    "District: " + district + "\n" +
+    "State: " + state + "\n" +
+    "PIN Code: " + pin +
+    (landmark ? "\nLandmark: " + landmark : "") +
+    "\n\nPlease confirm availability, delivery charges and payment instructions. I will share payment proof after paying.";
+
+  const whatsappUrl = "https://wa.me/" + ROJJ_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
+  const submit = document.getElementById("order-submit");
+  submit.disabled = true;
+  submit.textContent = "Opening WhatsApp…";
+
+  const win = window.open(whatsappUrl, "_blank");
+  if (!win) window.location.href = whatsappUrl;
+
+  closeOrderModal();
+  submit.disabled = false;
+  submit.textContent = "Continue to WhatsApp to Order";
+});
+
+function makeElement(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined && text !== null) element.textContent = text;
+  return element;
+}
+
+function createProductCard(product) {
+  const card = makeElement("article", "product");
+
+  if (product.images && product.images.length > 0) {
+    const image = makeElement("img", "product-image");
+    image.src = product.images[0];
+    image.alt = product.name || "ROJJ jewellery";
+    image.loading = "lazy";
+    image.onerror = function() {
+      image.replaceWith(makeElement("div", "image-placeholder", "ROJJ"));
+    };
+    card.appendChild(image);
+  } else {
+    card.appendChild(makeElement("div", "image-placeholder", "ROJJ"));
+  }
+
+  const details = makeElement("div", "product-details");
+  if (product.newArrival) details.appendChild(makeElement("span", "badge", "NEW ARRIVAL"));
+  else if (product.bestSeller) details.appendChild(makeElement("span", "badge", "BEST SELLER"));
+  else if (product.featured) details.appendChild(makeElement("span", "badge", "FEATURED"));
+
+  details.appendChild(makeElement("div", "product-category", product.category || "Jewellery"));
+  details.appendChild(makeElement("h3", "", product.name || "ROJJ Jewellery"));
+
+  if (product.description) details.appendChild(makeElement("p", "description", product.description));
+
+  const priceRow = makeElement("div", "price-row");
+  priceRow.appendChild(makeElement("span", "price", "₹" + Number(product.price || 0).toLocaleString("en-IN")));
+
+  if (Number(product.mrp) > Number(product.price)) {
+    priceRow.appendChild(makeElement("span", "mrp", "₹" + Number(product.mrp).toLocaleString("en-IN")));
+  }
+  details.appendChild(priceRow);
+
+  const orderButton = makeElement("button", "button", "Order on WhatsApp");
+  orderButton.type = "button";
+  orderButton.addEventListener("click", () => openOrderModal(product));
+  details.appendChild(orderButton);
+
+  const saved = isFavourite(product.id);
+  const favouriteButton = makeElement("button", "favourite-button" + (saved ? " is-saved" : ""), saved ? "♥ Added to Favourites" : "♡ Add to Favourites");
+  favouriteButton.type = "button";
+  favouriteButton.setAttribute("aria-pressed", String(saved));
+  favouriteButton.addEventListener("click", () => toggleFavourite(product));
+  details.appendChild(favouriteButton);
+
+  card.appendChild(details);
+  return card;
+}
+
+function createCollectionCard(collection) {
+  const card = makeElement("a", "collection-card");
+  card.href = "#products";
+  card.setAttribute("aria-label", "Explore " + (collection.name || "ROJJ collection"));
+  card.appendChild(makeElement("h3", "", collection.name || "ROJJ Collection"));
+  card.appendChild(makeElement("p", "", collection.description || "Discover this ROJJ collection."));
+  card.addEventListener("click", () => {
+    document.getElementById("products").scrollIntoView({behavior:"smooth"});
+  });
+  return card;
+}
+
+async function loadROJJCollections() {
+  const loading = document.getElementById("collections-loading");
+  const error = document.getElementById("collections-error");
+  const grid = document.getElementById("collections-grid");
+
+  try {
+    const response = await fetch(ROJJ_API_URL + "?action=collections");
+    if (!response.ok) throw new Error("Collections API returned an error.");
+    const data = await response.json();
+    if (!data.success || !Array.isArray(data.collections)) throw new Error("Invalid collection data.");
+
+    loading.style.display = "none";
+    if (data.collections.length === 0) {
+      grid.appendChild(makeElement("p", "", "Our collections are coming soon."));
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    data.collections.forEach(collection => fragment.appendChild(createCollectionCard(collection)));
+    grid.replaceChildren(fragment);
+  } catch (errorDetails) {
+    console.error("ROJJ collections loading error:", errorDetails);
+    loading.style.display = "none";
+    error.style.display = "block";
+  }
+}
+
+async function loadROJJProducts() {
+  const loading = document.getElementById("loading");
+  const error = document.getElementById("error-message");
+
+  try {
+    const response = await fetch(ROJJ_API_URL + "?action=products");
+    if (!response.ok) throw new Error("Product API returned an error.");
+    const data = await response.json();
+    if (!data.success || !Array.isArray(data.products)) throw new Error("Invalid product data.");
+
+    loading.style.display = "none";
+    rojjAllProducts = data.products;
+    renderProducts();
+  } catch (errorDetails) {
+    console.error("ROJJ product loading error:", errorDetails);
+    loading.style.display = "none";
+    error.style.display = "block";
+  }
+}
+
+updateFavouriteCount();
+loadROJJCollections();
+loadROJJProducts();
+</script>
 </body>
 </html>
