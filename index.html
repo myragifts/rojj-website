@@ -546,12 +546,14 @@ document.getElementById("order-form").addEventListener("submit", event => {
     "PIN Code: " + pin +
     (landmark ? "\nLandmark: " + landmark : "") +
     
-    "\n\nPAYMENT LINK\n" +
-    "https://tinyurl.com/Complete-payment-Now\n\n" +
-    "Click the link above and pay Rs. " + total.toLocaleString("en-IN") + " to confirm your order.\n\n" +
+    
+    "\n\nClick below to complete your payment:\n" +
+    "PAYMENT LINK: https://tinyurl.com/Complete-payment-Now\n\n" +
+    "Pay Rs. " + total.toLocaleString("en-IN") + " to confirm your order.\n\n" +
     "IMPORTANT: AFTER PAYMENT, PLEASE SEND YOUR PAYMENT SCREENSHOT HERE.\n\n" +
     "Thank you for choosing ROJJ.\n" +
     "ROJJ - Wear Your Colours.";
+
 
 
   const whatsappUrl = "https://wa.me/" + ROJJ_WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message);
