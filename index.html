@@ -59,13 +59,30 @@ header{padding:22px 20px;text-align:center;background:white;border-bottom:1px so
 .order-modal-panel h2{margin:0 34px 8px 0;color:var(--brown)}
 .order-modal-panel p{line-height:1.5}
 .order-close{position:absolute;right:14px;top:10px;border:0;background:#f5e9e5;border-radius:50%;width:38px;height:38px;font-size:24px;cursor:pointer}
-.order-form label{display:block;font-weight:bold;margin:13px 0 6px}
-.order-form input,.order-form textarea{width:100%;padding:12px;border:1px solid #d8c9c0;border-radius:8px;font:inherit;background:white;color:#222}
-.order-form input:focus,.order-form textarea:focus{outline:2px solid var(--rose);outline-offset:1px}
+.order-form label{display:block;font-weight:bold;margin:15px 0 7px;color:var(--brown)}
+.order-form input,.order-form textarea{width:100%;padding:13px 14px;border:1px solid #d8c9c0;border-radius:10px;font:inherit;background:#fffdfa;color:var(--brown);transition:border-color .18s,box-shadow .18s,background .18s}
+.order-form input:focus,.order-form textarea:focus{outline:none;border-color:var(--terracotta);background:#fff;box-shadow:0 0 0 3px #b86f5a24}
+.order-form input[aria-invalid="true"]{border-color:#b42318;background:#fffafa}
+.order-field-error{display:none;color:#a12626;font-size:13px;line-height:1.45;margin:6px 2px 0}
+.order-field-error.visible{display:block}
+.order-form input::placeholder{color:#a39791}
+.order-modal-panel{background:linear-gradient(145deg,#fffdfa 0%,#fff 60%,#fbf2ed 100%);border:1px solid #eadbd2}
+.order-modal-panel>p{color:#76635e}
+#rojj-toast-region{position:fixed;top:18px;right:18px;z-index:20000;display:flex;flex-direction:column;gap:10px;width:min(370px,calc(100vw - 28px));pointer-events:none}
+.rojj-toast{display:flex;align-items:flex-start;gap:11px;padding:14px 16px;background:#fffdfa;color:var(--brown);border:1px solid #e8d4c9;border-left:4px solid var(--terracotta);border-radius:13px;box-shadow:0 12px 35px #39231f24;animation:rojjToastIn .24s ease-out both;pointer-events:auto}
+.rojj-toast-success{border-left-color:#64866a}.rojj-toast-error{border-left-color:#b94b43}
+.rojj-toast-icon{display:flex;flex:0 0 25px;width:25px;height:25px;align-items:center;justify-content:center;border-radius:50%;background:#f5e5de;color:var(--terracotta);font-weight:bold}
+.rojj-toast-success .rojj-toast-icon{background:#e8f2e7;color:#3c7445}.rojj-toast-error .rojj-toast-icon{background:#fae8e6;color:#a12626}
+.rojj-toast-title{font-size:13px;font-weight:700;margin:0 0 3px}.rojj-toast-message{font-size:13px;line-height:1.45;color:#6e5953}
+.rojj-toast-leaving{animation:rojjToastOut .45s ease-in forwards}
+@keyframes rojjToastIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes rojjToastOut{to{opacity:0;transform:translateY(-8px)}}
+.order-submit{background:var(--terracotta);box-shadow:0 5px 14px #b86f5a30;transition:background .18s,transform .18s}
+.order-submit:hover{background:var(--brown);transform:translateY(-1px)}
 .order-form textarea{min-height:65px;resize:vertical}
 .optional-label{font-weight:normal;color:#76635e;font-size:12px}
 .form-error{display:none;color:#a12626;font-size:13px;margin:7px 0 0}
-.order-submit{width:100%;margin-top:18px;padding:14px;border:0;border-radius:9px;background:#238b52;color:white;font-size:16px;font-weight:bold;cursor:pointer}
+.order-submit{width:100%;margin-top:18px;padding:14px;border:0;border-radius:9px;background:var(--terracotta);color:white;font-size:16px;font-weight:bold;cursor:pointer}
 .order-submit:disabled{opacity:.65;cursor:wait}
 .story{background:white;padding:45px 20px;text-align:center;line-height:1.8}
 .story p{max-width:650px;margin:15px auto}
@@ -130,6 +147,8 @@ footer p{margin:5px}
   <p>© <span id="year"></span> ROJJ. All rights reserved.</p>
 </footer>
 
+<div id="rojj-toast-region" aria-live="polite" aria-atomic="false"></div>
+
 <div class="order-modal" id="order-modal" hidden>
   <div class="order-modal-panel" role="dialog" aria-modal="true" aria-labelledby="order-modal-title">
     <button type="button" class="order-close" id="order-close" aria-label="Close">×</button>
@@ -138,34 +157,42 @@ footer p{margin:5px}
     <form class="order-form" id="order-form" novalidate>
       <label for="customer-name">Your name *</label>
       <input id="customer-name" name="name" autocomplete="name" required maxlength="80" placeholder="Enter your full name">
+      <p class="order-field-error" id="customer-name-error"></p>
 
       <label for="customer-phone">WhatsApp / mobile number *</label>
-      <input id="customer-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" pattern="[6-9][0-9]{9}" required minlength="10" maxlength="10" placeholder="Enter 10-digit mobile number" aria-describedby="phone-error">
-      <p class="form-error" id="phone-error"></p>
+      <input id="customer-phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" pattern="[6-9][0-9]{9}" required minlength="10" maxlength="10" placeholder="Enter 10-digit mobile number" aria-describedby="customer-phone-error">
+      <p class="order-field-error" id="customer-phone-error"></p>
 
       <label for="customer-village">Village / Town *</label>
       <input id="customer-village" name="village" autocomplete="address-level3" required maxlength="100" placeholder="Enter village or town">
+      <p class="order-field-error" id="customer-village-error"></p>
 
       <label for="customer-post-office">Post Office *</label>
       <input id="customer-post-office" name="postOffice" required maxlength="100" placeholder="Enter post office">
+      <p class="order-field-error" id="customer-post-office-error"></p>
 
       <label for="customer-ps">Police Station (P.S.) *</label>
       <input id="customer-ps" name="policeStation" required maxlength="100" placeholder="Enter police station">
+      <p class="order-field-error" id="customer-ps-error"></p>
 
       <label for="customer-district">District *</label>
       <input id="customer-district" name="district" autocomplete="address-level2" required maxlength="100" placeholder="Enter district">
+      <p class="order-field-error" id="customer-district-error"></p>
 
       <label for="customer-state">State *</label>
       <input id="customer-state" name="state" autocomplete="address-level1" required maxlength="100" placeholder="Enter state">
+      <p class="order-field-error" id="customer-state-error"></p>
 
       <label for="customer-pin">PIN Code *</label>
       <input id="customer-pin" name="pin" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[1-9][0-9]{5}" minlength="6" maxlength="6" required placeholder="Enter 6-digit PIN code">
+      <p class="order-field-error" id="customer-pin-error"></p>
 
       <label for="customer-landmark">Landmark <span class="optional-label">(Optional)</span></label>
       <input id="customer-landmark" name="landmark" maxlength="150" placeholder="Nearby landmark, if any">
 
       <label for="order-quantity">Quantity *</label>
       <input id="order-quantity" name="quantity" type="number" inputmode="numeric" min="1" max="10" value="1" required>
+      <p class="order-field-error" id="order-quantity-error"></p>
 
       <button class="order-submit" id="order-submit" type="submit">Continue to WhatsApp to Order</button>
     </form>
@@ -180,6 +207,46 @@ let rojjAllProducts = [];
 let showingFavouritesOnly = false;
 let rojjSelectedOrderProduct = null;
 
+function rojjToast(message, title = "ROJJ", type = "info") {
+  const region = document.getElementById("rojj-toast-region");
+  if (!region) return;
+  const toast = document.createElement("div");
+  toast.className = "rojj-toast" + (type === "error" ? " rojj-toast-error" : type === "success" ? " rojj-toast-success" : "");
+  const icon = document.createElement("span");
+  icon.className = "rojj-toast-icon";
+  icon.textContent = type === "error" ? "!" : type === "success" ? "✓" : "i";
+  const content = document.createElement("div");
+  const heading = document.createElement("div");
+  heading.className = "rojj-toast-title";
+  heading.textContent = title;
+  const body = document.createElement("div");
+  body.className = "rojj-toast-message";
+  body.textContent = message;
+  content.append(heading, body);
+  toast.append(icon, content);
+  region.appendChild(toast);
+  setTimeout(() => {
+    if (!toast.isConnected) return;
+    toast.classList.add("rojj-toast-leaving");
+    toast.addEventListener("animationend", () => toast.remove(), {once:true});
+    setTimeout(() => toast.remove(), 500);
+  }, 3000);
+}
+
+function setFieldError(id, message) {
+  const field = document.getElementById(id);
+  const error = document.getElementById(id + "-error");
+  if (field) field.setAttribute("aria-invalid", message ? "true" : "false");
+  if (error) {
+    error.textContent = message || "";
+    error.classList.toggle("visible", Boolean(message));
+  }
+}
+
+function clearOrderFieldErrors() {
+  ["customer-name","customer-phone","customer-village","customer-post-office","customer-ps","customer-district","customer-state","customer-pin","order-quantity"].forEach(id => setFieldError(id, ""));
+}
+
 function getFavouriteIds() {
   try {
     const saved = JSON.parse(localStorage.getItem(ROJJ_FAVOURITES_KEY) || "[]");
@@ -193,7 +260,7 @@ function saveFavouriteIds(ids) {
     updateFavouriteCount();
     return true;
   } catch (error) {
-    alert("Your browser could not save favourites. Please check browser storage settings.");
+    rojjToast("Your browser could not save favourites. Please check browser storage settings.", "Could not save favourites", "error");
     return false;
   }
 }
@@ -208,8 +275,12 @@ function updateFavouriteCount() {
 function toggleFavourite(product) {
   const id = String(product.id);
   let ids = getFavouriteIds();
-  ids = ids.includes(id) ? ids.filter(savedId => savedId !== id) : [...ids, id];
-  if (saveFavouriteIds(ids)) renderProducts();
+  const wasSaved = ids.includes(id);
+  ids = wasSaved ? ids.filter(savedId => savedId !== id) : [...ids, id];
+  if (saveFavouriteIds(ids)) {
+    renderProducts();
+    rojjToast(wasSaved ? "Removed from your saved favourites." : "Saved to your favourites on this device.", wasSaved ? "Removed from Favourites" : "Added to Favourites", "success");
+  }
 }
 
 function renderProducts() {
@@ -259,14 +330,13 @@ document.getElementById("back-to-products").addEventListener("click", () => {
 document.getElementById("year").textContent = new Date().getFullYear();
 
 function openOrderModal(product) {
+  clearOrderFieldErrors();
   rojjSelectedOrderProduct = product;
   document.getElementById("order-product-summary").textContent =
     (product.name || "ROJJ Jewellery") + " — ₹" +
     Number(product.price || 0).toLocaleString("en-IN") +
     " each. Please enter your details.";
   document.getElementById("order-quantity").value = "1";
-  document.getElementById("phone-error").style.display = "none";
-  document.getElementById("phone-error").textContent = "";
   document.getElementById("customer-phone").setCustomValidity("");
   document.getElementById("order-modal").hidden = false;
   document.body.style.overflow = "hidden";
@@ -287,18 +357,13 @@ document.addEventListener("keydown", event => {
 });
 
 const phoneInput = document.getElementById("customer-phone");
-const phoneError = document.getElementById("phone-error");
 
-phoneInput.addEventListener("input", () => {
-  phoneInput.value = phoneInput.value.replace(/\D/g, "").slice(0, 10);
-  phoneInput.setCustomValidity("");
-  phoneError.style.display = "none";
-  phoneError.textContent = "";
-});
-
-document.getElementById("customer-pin").addEventListener("input", function() {
-  this.value = this.value.replace(/\D/g, "").slice(0, 6);
-  this.setCustomValidity("");
+document.getElementById("order-form").querySelectorAll("input").forEach(input => {
+  input.addEventListener("input", () => {
+    setFieldError(input.id, "");
+    if (input.id === "customer-phone") input.value = input.value.replace(/\D/g, "").slice(0, 10);
+    if (input.id === "customer-pin") input.value = input.value.replace(/\D/g, "").slice(0, 6);
+  });
 });
 
 document.getElementById("order-form").addEventListener("submit", event => {
@@ -317,56 +382,57 @@ document.getElementById("order-form").addEventListener("submit", event => {
   const quantityInput = document.getElementById("order-quantity");
   const quantity = Number(quantityInput.value);
 
-  phoneInput.setCustomValidity("");
-  phoneError.style.display = "none";
-  phoneError.textContent = "";
+  clearOrderFieldErrors();
+  const requiredFields = [
+    ["customer-name", name, "Please enter your name."],
+    ["customer-village", village, "Please enter your village or town."],
+    ["customer-post-office", postOffice, "Please enter your post office."],
+    ["customer-ps", policeStation, "Please enter your police station."],
+    ["customer-district", district, "Please enter your district."],
+    ["customer-state", state, "Please enter your state."],
+    ["customer-pin", pin, "Please enter your 6-digit PIN code."]
+  ];
+  for (const [id, value, messageText] of requiredFields) {
+    if (!value) {
+      setFieldError(id, messageText);
+      rojjToast(messageText, "Required field", "error");
+      document.getElementById(id).focus();
+      return;
+    }
+  }
 
   if (!/^[6-9][0-9]{9}$/.test(phone)) {
-    phoneInput.setCustomValidity("Enter exactly 10 digits, starting with 6, 7, 8 or 9.");
-    phoneError.textContent = "Please enter a valid 10-digit Indian mobile number.";
-    phoneError.style.display = "block";
-    phoneInput.reportValidity();
+    const messageText = "Enter exactly 10 digits, starting with 6, 7, 8 or 9.";
+    setFieldError("customer-phone", messageText);
+    rojjToast("Please enter a valid 10-digit Indian mobile number.", "Check mobile number", "error");
     phoneInput.focus();
     return;
   }
 
-  const blockedPhones = new Set([
-    "1234567890", "0123456789", "9876543210", "0987654321",
-    "1122334455", "1234512345", "1111111111", "2222222222",
-    "3333333333", "4444444444", "5555555555", "6666666666",
-    "7777777777", "8888888888", "9999999999", "0000000000"
-  ]);
-
-  if (blockedPhones.has(phone) || /^(\d)\1{9}$/.test(phone) ||
-      /^(\d{2})\1{4}$/.test(phone) || /^(\d)\2(\d)\3(\d)\4(\d)\5(\d)\6$/.test(phone)) {
-    phoneInput.setCustomValidity("This number looks like a sample or invalid number. Enter your real mobile number.");
-    phoneError.textContent = "This number looks abnormal or like a sample number. Please enter your real mobile number.";
-    phoneError.style.display = "block";
-    phoneInput.reportValidity();
+  const blockedPhones = new Set(["1234567890","0123456789","9876543210","0987654321","1122334455","1234512345","1111111111","2222222222","3333333333","4444444444","5555555555","6666666666","7777777777","8888888888","9999999999","0000000000"]);
+  if (blockedPhones.has(phone) || /^(\d)\1{9}$/.test(phone) || /^(\d{2})\1{4}$/.test(phone)) {
+    const messageText = "This number looks abnormal or like a sample number. Please enter your real mobile number.";
+    setFieldError("customer-phone", messageText);
+    rojjToast(messageText, "Check mobile number", "error");
     phoneInput.focus();
-    return;
-  }
-
-  if (!name || !village || !postOffice || !policeStation || !district || !state || !pin) {
-    alert("Please complete all required fields. Only Landmark is optional.");
     return;
   }
 
   if (!/^[1-9][0-9]{5}$/.test(pin)) {
-    const pinInput = document.getElementById("customer-pin");
-    pinInput.setCustomValidity("Enter a valid 6-digit PIN code.");
-    pinInput.reportValidity();
-    pinInput.focus();
+    const messageText = "Enter a valid 6-digit PIN code.";
+    setFieldError("customer-pin", messageText);
+    rojjToast(messageText, "Check PIN code", "error");
+    document.getElementById("customer-pin").focus();
     return;
   }
 
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) {
-    quantityInput.setCustomValidity("Quantity must be between 1 and 10.");
-    quantityInput.reportValidity();
+    const messageText = "Quantity must be a whole number between 1 and 10.";
+    setFieldError("order-quantity", messageText);
+    rojjToast(messageText, "Check quantity", "error");
     quantityInput.focus();
     return;
   }
-  quantityInput.setCustomValidity("");
 
   const product = rojjSelectedOrderProduct;
   const unitPrice = Number(product.price || 0);
@@ -499,6 +565,7 @@ async function loadROJJCollections() {
     console.error("ROJJ collections loading error:", errorDetails);
     loading.style.display = "none";
     error.style.display = "block";
+    rojjToast("Collections could not be loaded. Please check your connection and try again.", "Collection loading failed", "error");
   }
 }
 
@@ -519,6 +586,7 @@ async function loadROJJProducts() {
     console.error("ROJJ product loading error:", errorDetails);
     loading.style.display = "none";
     error.style.display = "block";
+    rojjToast("Products could not be loaded. Please check your connection and try again.", "Product loading failed", "error");
   }
 }
 
