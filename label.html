@@ -59,6 +59,8 @@ input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7p
   <section class="panel noprint">
     <h2>1. Load orders</h2>
     <p class="small">Load your orders from the ROJJ Google Apps Script. The script must support the action <b>?action=orders</b> and return order data as JSON.</p>
+   <label for="adminKey">ROJJ Admin Key</label>
+<input id="adminKey" type="password" placeholder="Enter your admin key">
     <button class="primary" onclick="loadOrders()">Load Orders</button>
     <button class="secondary" onclick="toggleManual()">Enter Orders Manually</button>
     <div id="status">Ready. Load orders or enter order details manually.</div>
