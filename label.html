@@ -8,44 +8,124 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f5f7f6;color:#202820;font-family:Arial,sans-serif}
-header{background:#176b45;color:white;padding:20px}
-header h1{margin:0;font-size:24px}
-header p{margin:7px 0 0;font-size:14px}
-main{max-width:1100px;margin:auto;padding:18px}
-.panel{background:white;border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 2px 10px #0000000c}
-button{border:0;border-radius:8px;padding:12px 16px;font-weight:bold;cursor:pointer;margin:4px 3px}
-.primary{background:#176b45;color:white}
-.secondary{background:#e7eee9;color:#174c33}
+:root{
+  --green:#176b45;
+  --deep:#104b32;
+  --cream:#fbf7f0;
+  --ink:#202820;
+  --muted:#68736c;
+  --gold:#c49a52
+}
+body{margin:0;background:#f3f6f4;color:var(--ink);font-family:Arial,sans-serif}
+header{
+  background:linear-gradient(120deg,#104b32,#1b7650);
+  color:#fff;padding:22px max(20px,calc((100% - 1060px)/2));
+  box-shadow:0 3px 14px #153d2c20
+}
+header h1{margin:0;font-size:25px;letter-spacing:1px}
+header p{margin:7px 0 0;font-size:14px;color:#e5f0e9}
+main{max-width:1100px;margin:auto;padding:20px}
+.panel{
+  background:#fff;border:1px solid #e5ebe6;border-radius:15px;
+  padding:20px;margin-bottom:17px;box-shadow:0 5px 20px #183c2810
+}
+.panel h2{margin:0 0 14px;font-size:21px;color:#172b20}
+button{
+  border:0;border-radius:9px;padding:12px 16px;font-weight:700;
+  cursor:pointer;margin:4px 3px;transition:transform .15s,filter .15s
+}
+button:hover{filter:brightness(.97);transform:translateY(-1px)}
+.primary{background:var(--green);color:white}
+.secondary{background:#e9f0eb;color:#174c33}
 .warning{background:#fff0d7;color:#704700}
-input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7px;margin:6px 0 12px;font:inherit}
-.order{border:1px solid #e0e5e1;border-radius:8px;padding:12px;margin:8px 0;display:flex;gap:10px;align-items:flex-start}
+input,textarea{
+  width:100%;padding:11px 12px;border:1px solid #ccd8cf;
+  border-radius:8px;margin:6px 0 12px;font:inherit;background:#fff
+}
+.order{
+  border:1px solid #e0e8e2;border-radius:10px;padding:13px;
+  margin:9px 0;display:flex;gap:10px;align-items:flex-start
+}
 .order input{width:auto;margin:4px}
-.small{font-size:13px;color:#66716a;line-height:1.5}
+.small{font-size:13px;color:var(--muted);line-height:1.5}
 #status{white-space:pre-wrap;margin-top:10px;font-size:14px}
 #manual{display:none}
+
 @page{size:A4 portrait;margin:0}
 @media print{
- body{background:white}
- header,.noprint{display:none!important}
- main{padding:0;margin:0;max-width:none}
- .panel{display:none!important}
- #printSheet{display:grid!important}
+  html,body{width:210mm;height:auto;background:#fff}
+  header,.noprint{display:none!important}
+  main{padding:0;margin:0;max-width:none}
+  .panel{display:none!important}
+  #printSheet{display:block!important}
 }
 #printSheet{display:none}
-.sheet{width:210mm;height:297mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;page-break-after:always;break-after:page}
-.label{width:105mm;height:148.5mm;border:1px dashed #999;padding:9mm;overflow:hidden;display:flex;flex-direction:column;gap:5px;font-size:12pt;overflow-wrap:anywhere}
-.brand{font-size:21pt;font-weight:bold;letter-spacing:2px}
-.label .muted{color:#555;font-size:10pt}
-.label .orderno{font-size:14pt;font-weight:bold;border-bottom:1px solid #222;padding-bottom:7px}
-.label .customer{font-size:16pt;font-weight:bold}
-.label .address{line-height:1.45}
-.label .product{border-top:1px solid #bbb;margin-top:4px;padding-top:7px}
-.barcode{width:100%;height:60px;object-fit:fill}
-.label .bottom{margin-top:auto;font-size:9pt;color:#555}
-@media screen{
- #printSheet{display:none}
+.sheet{
+  width:210mm;height:297mm;display:grid;
+  grid-template-columns:105mm 105mm;
+  grid-template-rows:148.5mm 148.5mm;
+  page-break-after:always;break-after:page;overflow:hidden
 }
+.sheet:last-child{page-break-after:auto;break-after:auto}
+.label{
+  width:105mm;height:148.5mm;border:1.1mm solid #171717;
+  padding:7mm 7.5mm;overflow:hidden;display:flex;
+  flex-direction:column;gap:3mm;font-size:10pt;
+  overflow-wrap:anywhere;position:relative;background:#fff
+}
+.label:before{
+  content:"";position:absolute;left:7.5mm;right:7.5mm;
+  top:23mm;border-top:.35mm solid #d8c39a
+}
+.label .brandrow{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:4mm
+}
+.label .brand{
+  font-size:22pt;font-weight:800;letter-spacing:2px;
+  color:#123f2c;line-height:1
+}
+.label .tagline{
+  font-size:7.5pt;letter-spacing:1.1px;color:#5f675f;margin-top:2mm
+}
+.label .orderbadge{
+  font-size:8pt;font-weight:bold;text-align:right;color:#fff;
+  background:#176b45;padding:2.2mm 2.5mm;border-radius:1.5mm;
+  max-width:53mm
+}
+.label .customer{
+  font-size:15pt;font-weight:bold;color:#172b20;margin-top:3mm
+}
+.label .phone{font-size:10pt;font-weight:700;color:#252d27}
+.label .sectiontitle{
+  font-size:8pt;font-weight:800;letter-spacing:.7px;
+  color:#176b45;margin-bottom:1mm
+}
+.label .address{
+  line-height:1.42;font-size:9.2pt;display:flex;
+  flex-direction:column;gap:.5mm
+}
+.label .address-line{display:block}
+.label .product{
+  border-top:.3mm solid #dedede;margin-top:1mm;
+  padding-top:3mm;font-size:10pt;line-height:1.35
+}
+.label .quantity{
+  margin-top:1mm;padding:2mm 2.5mm;border:.35mm solid #d8c39a;
+  border-radius:2mm;background:#fbf7f0;font-weight:bold;font-size:11pt
+}
+.label .barcode-wrap{
+  margin-top:auto;text-align:center;border-top:.3mm solid #e4e4e4;
+  padding-top:2.5mm
+}
+.label .barcode{
+  display:block;width:100%;height:19mm;max-height:19mm
+}
+.label .barcode-number{
+  font-size:8pt;letter-spacing:.5px;font-weight:bold;
+  margin-top:1mm;color:#252525
+}
+.label .bottom{text-align:center;font-size:7.5pt;color:#68736c;margin-top:1mm}
+@media screen{#printSheet{display:none}}
 </style>
 </head>
 
@@ -58,9 +138,9 @@ input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7p
 <main>
   <section class="panel noprint">
     <h2>1. Load orders</h2>
-    <p class="small">Load your orders from the ROJJ Google Apps Script. The script must support the action <b>?action=orders</b> and return order data as JSON.</p>
-   <label for="adminKey">ROJJ Admin Key</label>
-<input id="adminKey" type="password" placeholder="Enter your admin key">
+    <p class="small">Load orders from the ROJJ Google Apps Script. It must support <b>?action=orders</b> and return order data as JSON.</p>
+    <label for="adminKey">ROJJ Admin Key</label>
+    <input id="adminKey" type="password" placeholder="Enter your admin key">
     <button class="primary" onclick="loadOrders()">Load Orders</button>
     <button class="secondary" onclick="toggleManual()">Enter Orders Manually</button>
     <div id="status">Ready. Load orders or enter order details manually.</div>
@@ -68,7 +148,7 @@ input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7p
 
   <section class="panel noprint" id="manual">
     <h2>Enter an order manually</h2>
-    <p class="small">Use this if automatic order loading has not been connected yet.</p>
+    <p class="small">Use this if automatic order loading is not connected yet.</p>
     <label>Order number</label>
     <input id="mOrder" placeholder="ROJJ-1001">
     <label>Customer name</label>
@@ -86,12 +166,10 @@ input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7p
 
   <section class="panel noprint">
     <h2>2. Select orders</h2>
-    <div>
-      <button class="secondary" onclick="selectAll(true)">Select all</button>
-      <button class="secondary" onclick="selectAll(false)">Deselect all</button>
-    </div>
+    <button class="secondary" onclick="selectAll(true)">Select all</button>
+    <button class="secondary" onclick="selectAll(false)">Deselect all</button>
     <div id="orders"><p class="small">No orders loaded yet.</p></div>
-    <p class="small">Four labels fit on each A4 portrait page. If you select more than four orders, extra pages will be created automatically.</p>
+    <p class="small">Four premium framed labels fit on each A4 portrait page. More than four selected orders create extra pages automatically.</p>
   </section>
 
   <section class="panel noprint">
@@ -99,7 +177,7 @@ input,textarea{width:100%;padding:11px;border:1px solid #ccd4ce;border-radius:7p
     <button class="primary" onclick="downloadPDF()">Download PDF</button>
     <button class="secondary" onclick="sharePDF()">Share PDF on WhatsApp</button>
     <button class="secondary" onclick="printLabels()">Print Labels</button>
-    <p class="small">If direct PDF sharing is unavailable, download the PDF first, open WhatsApp, and attach the downloaded PDF to your printer shop owner's chat.</p>
+    <p class="small">If direct PDF sharing is unavailable, download the PDF first, open WhatsApp, and attach it to your printer shop owner's chat.</p>
   </section>
 </main>
 
@@ -112,367 +190,334 @@ const ROJJ_API_URL =
 let allOrders = [];
 let selectedIds = new Set();
 
-function setStatus(message) {
+function setStatus(message){
   document.getElementById("status").textContent = message;
 }
 
-function valueOf(obj, names, fallback="") {
-  for (const name of names) {
-    if (obj && obj[name] !== undefined && obj[name] !== null &&
-        String(obj[name]).trim() !== "") return String(obj[name]).trim();
+function normalizedKey(s){
+  return String(s || "").toLowerCase().replace(/[^a-z0-9]/g,"");
+}
+
+function fieldValue(obj,aliases,fallback=""){
+  if(!obj || typeof obj!=="object") return fallback;
+  const keys=Object.keys(obj);
+  for(const alias of aliases){
+    const wanted=normalizedKey(alias);
+    const key=keys.find(k=>normalizedKey(k)===wanted);
+    if(key!==undefined && obj[key]!==null && String(obj[key]).trim()!==""){
+      return String(obj[key]).trim();
+    }
   }
   return fallback;
 }
 
-function normalizeOrder(o, index) {
-  const address = valueOf(o, [
-    "Customer Address","customerAddress","address","Address","fullAddress"
-  ]);
+function formatAddress(raw,obj){
+  const fields=[
+    ["Village/Town",["Village/Town","Village","Town"]],
+    ["Post Office",["Post Office","Post Office (P.O.)","PO"]],
+    ["Police Station (P.S.)",["Police Station (P.S.)","Police Station","PS"]],
+    ["District",["District"]],
+    ["State",["State"]],
+    ["PIN",["PIN","PIN Code","Pincode","Postal Code"]],
+    ["Landmark",["Landmark"]]
+  ];
+  const found=[];
+  for(const [label,aliases] of fields){
+    const value=fieldValue(obj,aliases,"");
+    if(value) found.push({label,value});
+  }
+  if(found.length) return found;
+  return String(raw||"").split(/[,;\n]+/).map(part=>part.trim()).filter(Boolean).map(part=>{
+    const m=part.match(/^([^:]+):\s*(.*)$/);
+    return m?{label:m[1].trim(),value:m[2].trim()}:{label:"",value:part};
+  });
+}
+
+function normalizeOrder(o,index){
+  const orderNo=fieldValue(o,["Order ID","Order Number","orderId","orderNumber","order_id"],"ORDER-"+(index+1));
+  const address=fieldValue(o,["Customer Address","customerAddress","address","Address","fullAddress"]);
   return {
-    id: String(index) + "-" + valueOf(o, [
-      "Order ID","Order Number","orderId","orderNumber","order_id"
-    ], "ORDER-" + (index + 1)),
-    orderNo: valueOf(o, [
-      "Order ID","Order Number","orderId","orderNumber","order_id"
-    ], "ORDER-" + (index + 1)),
-    name: valueOf(o, [
-      "Customer Name","customerName","name","Name"
-    ], "Customer"),
-    phone: valueOf(o, [
-      "WhatsApp Number","Mobile Number","Phone","phone","mobile"
+    id:String(index)+"-"+orderNo,
+    orderNo,
+    name:fieldValue(o,["Customer Name","customerName","name","Name"],"Customer"),
+    phone:fieldValue(o,[
+      "WhatsApp Number","WhatsApp / mobile number","WhatsApp Mobile Number",
+      "Mobile Number","Customer Phone","Phone Number","Phone","phone",
+      "mobile","Mobile","Contact Number","Customer Mobile","WhatsApp"
     ]),
-    address: address,
-    product: valueOf(o, [
-      "Product Name","productName","Product","product"
-    ], "ROJJ Jewellery"),
-    quantity: valueOf(o, [
-      "Quantity","quantity","Qty","qty"
-    ], "1")
+    address,
+    addressLines:formatAddress(address,o),
+    product:fieldValue(o,["Product Name","productName","Product","product"],"ROJJ Jewellery"),
+    quantity:fieldValue(o,["Quantity","quantity","Qty","qty"],"1")
   };
 }
 
-async function loadOrders() {
+
+async function loadOrders(){
   setStatus("Loading orders…");
-  try {
-    const key = document.getElementById("adminKey").value.trim();
-if (!key) {
-  setStatus("Please enter your ROJJ Admin Key.");
-  return;
-}
-const url = ROJJ_API_URL + "?action=orders&key=" + encodeURIComponent(key);
-    const response = await fetch(url, {method:"GET"});
-    if (!response.ok) throw new Error("Server response: " + response.status);
-    const data = await response.json();
-
-    const rows = Array.isArray(data) ? data :
-      (data.orders || data.data || data.rows || []);
-
-    if (!Array.isArray(rows) || rows.length === 0) {
-      throw new Error("No orders returned. Your Apps Script must support ?action=orders and return the Orders sheet data.");
+  try{
+    const key=document.getElementById("adminKey").value.trim();
+    if(!key){
+      setStatus("Please enter your ROJJ Admin Key.");
+      return;
     }
-
-    allOrders = rows.map(normalizeOrder);
-    selectedIds = new Set(allOrders.map(o => o.id));
+    const url=ROJJ_API_URL+"?action=orders&key="+encodeURIComponent(key);
+    const response=await fetch(url);
+    if(!response.ok) throw new Error("Server response: "+response.status);
+    const data=await response.json();
+    const rows=Array.isArray(data)?data:(data.orders||data.data||data.rows||[]);
+    if(!Array.isArray(rows)||!rows.length){
+      throw new Error("No orders returned. Check your Apps Script order-reading action.");
+    }
+    allOrders=rows.map(normalizeOrder);
+    selectedIds=new Set(allOrders.map(o=>o.id));
     renderOrders();
-    setStatus("Loaded " + allOrders.length + " order(s).");
-  } catch (err) {
-    setStatus(
-      "Could not load orders automatically.\n\n" +
-      "Your current Apps Script may only save orders and may not provide an order-reading action yet.\n" +
-      "Use “Enter Orders Manually” for now. Error: " + err.message
-    );
+    setStatus("Loaded "+allOrders.length+" order(s).");
+  }catch(err){
+    setStatus("Could not load orders automatically.\n\n"+
+      "Your Apps Script must support ?action=orders and return the Orders sheet data.\n"+
+      "You can use Enter Orders Manually for now.\nError: "+err.message);
   }
 }
 
-function toggleManual() {
-  const panel = document.getElementById("manual");
-  panel.style.display = panel.style.display === "block" ? "none" : "block";
+function toggleManual(){
+  const panel=document.getElementById("manual");
+  panel.style.display=panel.style.display==="block"?"none":"block";
 }
 
-function addManualOrder() {
-  const orderNo = document.getElementById("mOrder").value.trim();
-  const name = document.getElementById("mName").value.trim();
-  const phone = document.getElementById("mPhone").value.trim();
-  const address = document.getElementById("mAddress").value.trim();
-  const product = document.getElementById("mProduct").value.trim();
-  const quantity = document.getElementById("mQty").value;
-
-  if (!orderNo || !name || !address || !product || !quantity) {
+function addManualOrder(){
+  const orderNo=document.getElementById("mOrder").value.trim();
+  const name=document.getElementById("mName").value.trim();
+  const phone=document.getElementById("mPhone").value.trim();
+  const address=document.getElementById("mAddress").value.trim();
+  const product=document.getElementById("mProduct").value.trim();
+  const quantity=document.getElementById("mQty").value;
+  if(!orderNo||!name||!address||!product||!quantity){
     alert("Please fill in order number, customer name, address, product and quantity.");
     return;
   }
-
-  const order = {
-    id:"manual-" + Date.now(),
-    orderNo, name, phone, address, product, quantity
+  const order={
+    id:"manual-"+Date.now(),orderNo,name,phone,address,
+    addressLines:formatAddress(address,{}),product,quantity
   };
   allOrders.push(order);
   selectedIds.add(order.id);
   renderOrders();
-  setStatus("Order " + orderNo + " added.");
+  setStatus("Order "+orderNo+" added.");
 }
 
-function renderOrders() {
-  const box = document.getElementById("orders");
-  if (!allOrders.length) {
-    box.innerHTML = '<p class="small">No orders loaded yet.</p>';
+function renderOrders(){
+  const box=document.getElementById("orders");
+  if(!allOrders.length){
+    box.innerHTML='<p class="small">No orders loaded yet.</p>';
     return;
   }
-
-  box.innerHTML = "";
-  allOrders.forEach(o => {
-    const row = document.createElement("label");
-    row.className = "order";
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.checked = selectedIds.has(o.id);
-    cb.addEventListener("change", () => {
-      if (cb.checked) selectedIds.add(o.id);
+  box.innerHTML="";
+  allOrders.forEach(o=>{
+    const row=document.createElement("label");
+    row.className="order";
+    const cb=document.createElement("input");
+    cb.type="checkbox";
+    cb.checked=selectedIds.has(o.id);
+    cb.addEventListener("change",()=>{
+      if(cb.checked) selectedIds.add(o.id);
       else selectedIds.delete(o.id);
     });
-
-    const info = document.createElement("div");
-    const title = document.createElement("strong");
-    title.textContent = o.orderNo + " — " + o.name;
-    const detail = document.createElement("div");
-    detail.className = "small";
-    detail.textContent = o.product + " · Qty " + o.quantity + " · " + o.phone;
-    info.append(title, document.createElement("br"), detail);
-    row.append(cb, info);
+    const info=document.createElement("div");
+    const title=document.createElement("strong");
+    title.textContent=o.orderNo+" — "+o.name;
+    const detail=document.createElement("div");
+    detail.className="small";
+    detail.textContent=o.product+" · Qty "+o.quantity+" · "+(o.phone||"No mobile number");
+    info.append(title,document.createElement("br"),detail);
+    row.append(cb,info);
     box.appendChild(row);
   });
 }
 
-function selectAll(yes) {
-  selectedIds = new Set(yes ? allOrders.map(o => o.id) : []);
+function selectAll(yes){
+  selectedIds=new Set(yes?allOrders.map(o=>o.id):[]);
   renderOrders();
 }
-
-function getSelected() {
-  return allOrders.filter(o => selectedIds.has(o.id));
+function getSelected(){
+  return allOrders.filter(o=>selectedIds.has(o.id));
 }
-
-function esc(s) {
-  return String(s ?? "").replace(/[&<>"']/g, c => ({
+function esc(s){
+  return String(s??"").replace(/[&<>"']/g,c=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   }[c]));
 }
 
-function labelHTML(o) {
-  const barcodeText = String(o.orderNo || "ROJJ");
+function labelHTML(o){
+  const addressLines=(o.addressLines||formatAddress(o.address,{})).map(line=>
+    `<div class="address-line">${line.label?`<b>${esc(line.label)}:</b> `:""}${esc(line.value)}</div>`
+  ).join("");
   return `
     <div class="label">
-      <div class="brand">ROJJ</div>
-      <div class="muted">WEAR YOUR COLOURS</div>
-      <div class="orderno">ORDER: ${esc(o.orderNo)}</div>
+      <div class="brandrow">
+        <div><div class="brand">ROJJ</div><div class="tagline">WEAR YOUR COLOURS</div></div>
+        <div class="orderbadge">ORDER<br>${esc(o.orderNo)}</div>
+      </div>
       <div class="customer">${esc(o.name)}</div>
-      <div><b>Mobile:</b> ${esc(o.phone || "Not provided")}</div>
-      <div class="address"><b>DELIVER TO:</b><br>${esc(o.address).replace(/\n/g,"<br>")}</div>
-      <div class="product"><b>PRODUCT:</b><br>${esc(o.product)}</div>
-      <div><b>QUANTITY:</b> ${esc(o.quantity)}</div>
-      <svg class="barcode" data-code="${esc(barcodeText)}"></svg>
-      <div class="bottom">Thank you for shopping with ROJJ.</div>
+      <div class="phone">MOBILE: ${esc(o.phone||"Not provided")}</div>
+      <div>
+        <div class="sectiontitle">DELIVERY ADDRESS</div>
+        <div class="address">${addressLines||esc(o.address||"Address not provided")}</div>
+      </div>
+      <div class="product"><div class="sectiontitle">PRODUCT</div><b>${esc(o.product)}</b></div>
+      <div class="quantity">Quantity: ${esc(o.quantity)}</div>
+      <div class="barcode-wrap">
+        <svg class="barcode" data-code="${esc(o.orderNo)}"></svg>
+        <div class="barcode-number">${esc(o.orderNo)}</div>
+      </div>
+      <div class="bottom">Thank you for shopping with ROJJ · Wear Your Colours</div>
     </div>`;
 }
 
-function buildSheets() {
-  const orders = getSelected();
-  if (!orders.length) {
+function buildSheets(){
+  const orders=getSelected();
+  if(!orders.length){
     alert("Please select at least one order.");
     return false;
   }
-
-  const target = document.getElementById("printSheet");
-  target.innerHTML = "";
-  for (let i = 0; i < orders.length; i += 4) {
-    const sheet = document.createElement("div");
-    sheet.className = "sheet";
-    sheet.innerHTML = orders.slice(i, i + 4).map(labelHTML).join("");
+  const target=document.getElementById("printSheet");
+  target.innerHTML="";
+  for(let i=0;i<orders.length;i+=4){
+    const sheet=document.createElement("div");
+    sheet.className="sheet";
+    sheet.innerHTML=orders.slice(i,i+4).map(labelHTML).join("");
     target.appendChild(sheet);
   }
-
-  if (typeof JsBarcode !== "undefined") {
-    target.querySelectorAll("svg.barcode").forEach(svg => {
-      try {
-        JsBarcode(svg, svg.dataset.code, {
-          format:"CODE128", displayValue:true, fontSize:12,
-          height:38, margin:2
+  if(typeof JsBarcode!=="undefined"){
+    target.querySelectorAll("svg.barcode").forEach(svg=>{
+      try{
+        JsBarcode(svg,svg.dataset.code,{
+          format:"CODE128",displayValue:false,height:45,margin:2,width:1.5
         });
-      } catch (e) {
-        svg.outerHTML = "<div><b>Order:</b> " + esc(svg.dataset.code) + "</div>";
+      }catch(e){
+        svg.outerHTML="<div><b>Order:</b> "+esc(svg.dataset.code)+"</div>";
       }
     });
   }
   return true;
 }
 
-function printLabels() {
-  if (!buildSheets()) return;
+function printLabels(){
+  if(!buildSheets()) return;
   window.print();
 }
 
-function downloadPDF() {
-  if (!buildSheets()) return;
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("PDF library did not load. Check your internet connection and try again.");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-  const sheets = document.querySelectorAll("#printSheet .sheet");
-  let pageStarted = false;
-
-  sheets.forEach(sheet => {
-    if (pageStarted) pdf.addPage("a4","portrait");
-    pageStarted = true;
-    const labels = sheet.querySelectorAll(".label");
-
-    labels.forEach((label, index) => {
-      const x = (index % 2) * 105;
-      const y = Math.floor(index / 2) * 148.5;
-      pdf.setDrawColor(170);
-      pdf.setLineDashPattern([1,1],0);
-      pdf.rect(x, y, 105, 148.5);
-      pdf.setLineDashPattern([],0);
-
-      let cursor = y + 10;
-      const maxWidth = 87;
-
-      pdf.setFont("helvetica","bold");
-      pdf.setFontSize(21);
-      pdf.text("ROJJ",x+9,cursor);
-      cursor += 7;
-
-      pdf.setFont("helvetica","normal");
-      pdf.setFontSize(9);
-      pdf.text("WEAR YOUR COLOURS",x+9,cursor);
-      cursor += 8;
-
-      const textLines = [
-        ["ORDER: " + getLabelText(label,".orderno"),14,"bold"],
-        [getLabelText(label,".customer"),15,"bold"],
-        ["Mobile: " + getLabelText(label,".customer + nothing"),10,"normal"]
-      ];
-
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica","bold");
-      pdf.text("ORDER: " + label.querySelector(".orderno").innerText.replace("ORDER: ",""),x+9,cursor);
-      cursor += 10;
-
-      pdf.setFontSize(15);
-      pdf.text(pdf.splitTextToSize(label.querySelector(".customer").innerText,maxWidth),x+9,cursor);
-      cursor += 10;
-
-      pdf.setFont("helvetica","normal");
-      pdf.setFontSize(10);
-      pdf.text(pdf.splitTextToSize("Mobile: "+label.innerText.match(/Mobile:\s*([^\n]+)/)?.[1],maxWidth),x+9,cursor);
-      cursor += 9;
-
-      pdf.setFont("helvetica","bold");
-      pdf.text("DELIVER TO:",x+9,cursor);
-      cursor += 5;
-      pdf.setFont("helvetica","normal");
-      const address = label.querySelector(".address").innerText.replace("DELIVER TO:","").trim();
-      const addressLines = pdf.splitTextToSize(address,maxWidth);
-      pdf.text(addressLines,x+9,cursor);
-      cursor += addressLines.length*5+6;
-
-      pdf.setFont("helvetica","bold");
-      pdf.text("PRODUCT:",x+9,cursor);
-      cursor += 5;
-      pdf.setFont("helvetica","normal");
-      const productLines = pdf.splitTextToSize(label.querySelector(".product").innerText.replace("PRODUCT:","").trim(),maxWidth);
-      pdf.text(productLines,x+9,cursor);
-      cursor += productLines.length*5+5;
-
-      pdf.setFont("helvetica","bold");
-      pdf.text("QUANTITY: "+label.querySelector(".label .bottom").parentElement.querySelector("div:nth-of-type(7)")?.innerText.replace("QUANTITY: ",""),x+9,cursor);
-
-      const svg = label.querySelector("svg.barcode");
-      if (svg && svg.querySelector("rect")) {
-        try {
-          const xml = new XMLSerializer().serializeToString(svg);
-          const svgBlob = new Blob([xml],{type:"image/svg+xml;charset=utf-8"});
-          const reader = new FileReader();
-          // PDF barcode is also represented by the order number below,
-          // ensuring the order remains identifiable if SVG conversion is unavailable.
-          pdf.setFontSize(10);
-          pdf.text("Barcode / Order: "+label.querySelector(".orderno").innerText.replace("ORDER: ",""),x+9,y+132);
-        } catch(e) {}
-      }
-      pdf.setFontSize(9);
-      pdf.text("Thank you for shopping with ROJJ.",x+9,y+141);
+function drawBarcodeToPDF(pdf,orderNo,x,y,width=82,height=15){
+  if(typeof JsBarcode==="undefined") return false;
+  try{
+    const canvas=document.createElement("canvas");
+    JsBarcode(canvas,String(orderNo||"ROJJ"),{
+      format:"CODE128",displayValue:false,height:70,margin:2,width:2
     });
-  });
+    pdf.addImage(canvas.toDataURL("image/png"),"PNG",x,y,width,height);
+    return true;
+  }catch(e){return false;}
+}
 
+function drawPdfLabel(pdf,o,x,y){
+  const w=105,h=148.5,pad=8;
+  pdf.setDrawColor(20);pdf.setLineWidth(0.8);
+  pdf.rect(x+0.8,y+0.8,w-1.6,h-1.6);
+  pdf.setDrawColor(216,195,154);pdf.setLineWidth(0.35);
+  pdf.line(x+pad,y+24,x+w-pad,y+24);
+
+  let cy=y+12;
+  pdf.setTextColor(18,63,44);pdf.setFont("helvetica","bold");
+  pdf.setFontSize(22);pdf.text("ROJJ",x+pad,cy);
+  pdf.setTextColor(90,100,92);pdf.setFont("helvetica","normal");
+  pdf.setFontSize(7.5);pdf.text("WEAR YOUR COLOURS",x+pad,cy+5);
+
+  pdf.setFillColor(23,107,69);
+  pdf.roundedRect(x+57,y+6,40,13,1.5,1.5,"F");
+  pdf.setTextColor(255);pdf.setFont("helvetica","bold");
+  pdf.setFontSize(7.5);pdf.text("ORDER",x+59,y+10);
+  pdf.setFontSize(7);
+  pdf.text(pdf.splitTextToSize(String(o.orderNo),36).slice(0,2),x+59,y+15);
+
+  cy=y+31;pdf.setTextColor(25,43,32);
+  pdf.setFont("helvetica","bold");pdf.setFontSize(15);
+  pdf.text(pdf.splitTextToSize(String(o.name||"Customer"),88).slice(0,2),x+pad,cy);
+  cy+=9;
+
+  pdf.setTextColor(35);pdf.setFontSize(9.5);
+  pdf.text(pdf.splitTextToSize("MOBILE: "+(o.phone||"Not provided"),88).slice(0,2),x+pad,cy);
+  cy+=8;
+
+  pdf.setTextColor(23,107,69);pdf.setFont("helvetica","bold");pdf.setFontSize(8);
+  pdf.text("DELIVERY ADDRESS",x+pad,cy);cy+=5;
+  pdf.setTextColor(35);pdf.setFont("helvetica","normal");pdf.setFontSize(8.5);
+
+  const addr=(o.addressLines||formatAddress(o.address,{})).map(a=>(a.label?a.label+": ":"")+a.value);
+  const addrLines=[];
+  addr.forEach(a=>pdf.splitTextToSize(a,88).forEach(line=>addrLines.push(line)));
+  pdf.text(addrLines.slice(0,7),x+pad,cy);
+  cy+=Math.min(addrLines.length,7)*4.2+5;
+
+  pdf.setDrawColor(220);pdf.line(x+pad,cy,x+w-pad,cy);cy+=5;
+  pdf.setTextColor(23,107,69);pdf.setFont("helvetica","bold");pdf.setFontSize(8);
+  pdf.text("PRODUCT",x+pad,cy);cy+=5;
+  pdf.setTextColor(30);pdf.setFontSize(10);
+  pdf.text(pdf.splitTextToSize(String(o.product||"ROJJ Jewellery"),88).slice(0,2),x+pad,cy);
+  cy+=9;
+
+  pdf.setFillColor(251,247,240);pdf.setDrawColor(216,195,154);
+  pdf.roundedRect(x+pad,cy-4,88,9,1.2,1.2,"FD");
+  pdf.setTextColor(25,43,32);pdf.setFont("helvetica","bold");pdf.setFontSize(10);
+  pdf.text("Quantity: "+String(o.quantity||"1"),x+pad+3,cy+2);
+
+  drawBarcodeToPDF(pdf,o.orderNo,x+pad+3,y+119,82,15);
+  pdf.setTextColor(35);pdf.setFont("helvetica","bold");pdf.setFontSize(8);
+  pdf.text(String(o.orderNo),x+w/2,y+137,{align:"center"});
+  pdf.setTextColor(90,100,92);pdf.setFont("helvetica","normal");pdf.setFontSize(7);
+  pdf.text("Thank you for shopping with ROJJ",x+w/2,y+143,{align:"center"});
+}
+
+function createSelectedPDF(){
+  const orders=getSelected();
+  if(!orders.length){
+    alert("Please select at least one order.");
+    return null;
+  }
+  if(!window.jspdf||!window.jspdf.jsPDF){
+    alert("PDF library did not load. Check your internet connection and try again.");
+    return null;
+  }
+  const {jsPDF}=window.jspdf;
+  const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});
+  orders.forEach((o,i)=>{
+    if(i>0&&i%4===0) pdf.addPage("a4","portrait");
+    const pos=i%4;
+    drawPdfLabel(pdf,o,(pos%2)*105,Math.floor(pos/2)*148.5);
+  });
+  return pdf;
+}
+
+function downloadPDF(){
+  const pdf=createSelectedPDF();
+  if(pdf) pdf.save("ROJJ-Parcel-Labels.pdf");
+}
+
+async function sharePDF(){
+  const pdf=createSelectedPDF();
+  if(!pdf) return;
+  const blob=pdf.output("blob");
+  const message="Hello, please print the attached ROJJ parcel-label PDF on A4 paper, portrait orientation. Thank you.";
+  const file=new File([blob],"ROJJ-Parcel-Labels.pdf",{type:"application/pdf"});
+
+  if(navigator.canShare&&navigator.share&&navigator.canShare({files:[file]})){
+    try{
+      await navigator.share({files:[file],title:"ROJJ Parcel Labels",text:message});
+      return;
+    }catch(e){}
+  }
   pdf.save("ROJJ-Parcel-Labels.pdf");
-}
-
-function getLabelText(label, selector) {
-  const el = label.querySelector(selector);
-  return el ? el.innerText : "";
-}
-
-async function sharePDF() {
-  if (!buildSheets()) return;
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    alert("PDF library did not load. Use Download PDF, then attach it in WhatsApp.");
-    return;
-  }
-
-  // Generate and download the PDF first. This fallback works on desktop
-  // and on browsers where direct file sharing is unavailable.
-  downloadPDF();
-
-  const message = "Hello, please print the attached ROJJ parcel-label PDF on A4 paper, portrait orientation. Thank you.";
-  const whatsappURL = "https://wa.me/?text=" + encodeURIComponent(message);
-
-  if (navigator.canShare && navigator.share && window.File) {
-    try {
-      const pdf = await makePDFBlob();
-      const file = new File([pdf],"ROJJ-Parcel-Labels.pdf",{type:"application/pdf"});
-      if (navigator.canShare({files:[file]})) {
-        await navigator.share({
-          files:[file],
-          title:"ROJJ Parcel Labels",
-          text:message
-        });
-        return;
-      }
-    } catch(e) {}
-  }
-
-  window.open(whatsappURL,"_blank");
+  window.open("https://wa.me/?text="+encodeURIComponent(message),"_blank");
   alert("The PDF has been downloaded. In WhatsApp, open your printer shop owner's chat, attach ROJJ-Parcel-Labels.pdf from Downloads, and tap Send.");
-}
-
-async function makePDFBlob() {
-  // Regenerate a PDF blob for browsers supporting direct file sharing.
-  // Use the same layout and content as the download function.
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-  const orders = getSelected();
-  orders.forEach((o,i) => {
-    if (i && i%4===0) pdf.addPage();
-    const p=i%4, x=(p%2)*105, y=Math.floor(p/2)*148.5;
-    pdf.setDrawColor(170); pdf.rect(x,y,105,148.5);
-    let cy=y+12;
-    pdf.setFont("helvetica","bold");pdf.setFontSize(21);pdf.text("ROJJ",x+9,cy);cy+=9;
-    pdf.setFontSize(12);pdf.text("ORDER: "+o.orderNo,x+9,cy);cy+=9;
-    pdf.setFontSize(15);pdf.text(pdf.splitTextToSize(o.name,87),x+9,cy);cy+=9;
-    pdf.setFont("helvetica","normal");pdf.setFontSize(10);
-    pdf.text(pdf.splitTextToSize("Mobile: "+o.phone,87),x+9,cy);cy+=8;
-    pdf.setFont("helvetica","bold");pdf.text("DELIVER TO:",x+9,cy);cy+=5;
-    pdf.setFont("helvetica","normal");
-    const lines=pdf.splitTextToSize(o.address,87);pdf.text(lines,x+9,cy);cy+=lines.length*5+7;
-    pdf.setFont("helvetica","bold");pdf.text("PRODUCT:",x+9,cy);cy+=5;
-    pdf.setFont("helvetica","normal");
-    const products=pdf.splitTextToSize(o.product,87);pdf.text(products,x+9,cy);cy+=products.length*5+5;
-    pdf.setFont("helvetica","bold");pdf.text("QUANTITY: "+o.quantity,x+9,cy);
-    pdf.setFontSize(9);pdf.text("Order barcode: "+o.orderNo,x+9,y+135);
-  });
-  return pdf.output("blob");
 }
 </script>
 
