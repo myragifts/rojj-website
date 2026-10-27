@@ -154,7 +154,12 @@ function normalizeOrder(o, index) {
 async function loadOrders() {
   setStatus("Loading orders…");
   try {
-    const url = ROJJ_API_URL + "?action=orders";
+    const key = document.getElementById("adminKey").value.trim();
+if (!key) {
+  setStatus("Please enter your ROJJ Admin Key.");
+  return;
+}
+const url = ROJJ_API_URL + "?action=orders&key=" + encodeURIComponent(key);
     const response = await fetch(url, {method:"GET"});
     if (!response.ok) throw new Error("Server response: " + response.status);
     const data = await response.json();
