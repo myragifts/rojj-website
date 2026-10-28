@@ -545,6 +545,7 @@ function closeOrderModal() {
 }
 
 document.getElementById("order-close").addEventListener("click", closeOrderModal);
+  document.getElementById("order-back").addEventListener("click", closeOrderModal);
 document.getElementById("order-modal").addEventListener("click", event => {
   if (event.target.id === "order-modal") closeOrderModal();
 });
