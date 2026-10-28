@@ -374,10 +374,14 @@ function rojjToast(message, title = "ROJJ", type = "info") {
 function setFieldError(id, message) {
   const field = document.getElementById(id);
   const error = document.getElementById(id + "-error");
-  if (field) field.setAttribute("aria-invalid", message ? "true" : "false");
+
+  if (field) {
+    field.setAttribute("aria-invalid", message ? "true" : "false");
+  }
+
   if (error) {
-    error.textContent = message || "";
-    error.classList.toggle("visible", Boolean(message));
+    error.textContent = "";
+    error.classList.remove("visible");
   }
 }
 
