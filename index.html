@@ -799,6 +799,105 @@ function makeElement(tag, className, text) {
   return element;
 }
 
+function openProductImageViewer(images, startIndex, productName) {
+  const validImages = images.filter(Boolean);
+  if (!validImages.length) return;
+
+  let currentIndex = Math.min(startIndex, validImages.length - 1);
+
+  const viewer = document.createElement("div");
+  viewer.style.cssText = `
+    position:fixed;inset:0;z-index:30000;
+    background:#211916;display:flex;
+    align-items:center;justify-content:center;
+    padding:65px 20px;
+  `;
+
+  const mainImage = document.createElement("img");
+  mainImage.alt = productName || "ROJJ jewellery";
+  mainImage.style.cssText =
+    "max-width:100%;max-height:100%;object-fit:contain;";
+
+  const close = document.createElement("button");
+  close.textContent = "×";
+  close.setAttribute("aria-label", "Close image viewer");
+  close.style.cssText = `
+    position:absolute;top:18px;left:18px;
+    width:44px;height:44px;border:0;
+    border-radius:50%;background:white;
+    color:#4A3532;font-size:32px;cursor:pointer;
+  `;
+
+  const previous = document.createElement("button");
+  previous.textContent = "‹";
+  previous.style.cssText = `
+    position:absolute;left:15px;top:50%;
+    width:42px;height:42px;border:0;
+    border-radius:50%;background:#ffffffdd;
+    color:#4A3532;font-size:30px;cursor:pointer;
+  `;
+
+  const next = document.createElement("button");
+  next.textContent = "›";
+  next.style.cssText = `
+    position:absolute;right:15px;top:50%;
+    width:42px;height:42px;border:0;
+    border-radius:50%;background:#ffffffdd;
+    color:#4A3532;font-size:30px;cursor:pointer;
+  `;
+
+  const counter = document.createElement("div");
+  counter.style.cssText = `
+    position:absolute;bottom:18px;color:white;
+    font-size:14px;background:#4A3532;
+    padding:8px 16px;border-radius:20px;
+  `;
+
+  function updateImage() {
+    mainImage.src = validImages[currentIndex];
+    counter.textContent = (currentIndex + 1) + " / " + validImages.length;
+    previous.style.display = validImages.length > 1 ? "block" : "none";
+    next.style.display = validImages.length > 1 ? "block" : "none";
+  }
+
+  function showPrevious() {
+    currentIndex = (currentIndex - 1 + validImages.length) % validImages.length;
+    updateImage();
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % validImages.length;
+    updateImage();
+  }
+
+  function closeViewer() {
+    viewer.remove();
+    document.removeEventListener("keydown", handleKey);
+    document.body.style.overflow = "";
+  }
+
+  function handleKey(event) {
+    if (event.key === "Escape") closeViewer();
+    if (event.key === "ArrowLeft") showPrevious();
+    if (event.key === "ArrowRight") showNext();
+  }
+
+  close.addEventListener("click", closeViewer);
+  previous.addEventListener("click", showPrevious);
+  next.addEventListener("click", showNext);
+
+  viewer.addEventListener("click", function(event) {
+    if (event.target === viewer) closeViewer();
+  });
+
+  viewer.append(mainImage, close, previous, next, counter);
+  document.body.appendChild(viewer);
+  document.body.style.overflow = "hidden";
+  document.addEventListener("keydown", handleKey);
+
+  updateImage();
+}
+
 function createProductCard(product) {
   const card = makeElement("article", "product");
 
