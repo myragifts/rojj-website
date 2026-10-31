@@ -802,20 +802,57 @@ function makeElement(tag, className, text) {
 function createProductCard(product) {
   const card = makeElement("article", "product");
 
-  if (product.images && product.images.length > 0) {
-    const image = makeElement("img", "product-image");
-    image.src = product.images[0];
-    image.alt = product.name || "ROJJ jewellery";
-    image.loading = "lazy";
+  
+if (product.images && product.images.length > 0) {
+  const gallery = makeElement("div", "product-gallery");
+  let galleryIndex = 0;
 
-    image.onerror = function() {
-      image.replaceWith(makeElement("div", "image-placeholder", "ROJJ"));
-    };
+  const image = makeElement("img", "product-image");
+  image.src = product.images[0];
+  image.alt = product.name || "ROJJ jewellery";
+  image.loading = "lazy";
 
-    card.appendChild(image);
-  } else {
-    card.appendChild(makeElement("div", "image-placeholder", "ROJJ"));
+  image.onerror = function() {
+    image.replaceWith(makeElement("div", "image-placeholder", "ROJJ"));
+  };
+
+  gallery.appendChild(image);
+
+  if (product.images.length > 1) {
+    const prev = makeElement("button", "gallery-arrow gallery-prev", "‹");
+    prev.type = "button";
+
+    const next = makeElement("button", "gallery-arrow gallery-next", "›");
+    next.type = "button";
+
+    const count = makeElement("span", "gallery-count", "1 / " + product.images.length);
+
+    prev.addEventListener("click", function(event) {
+      event.stopPropagation();
+      galleryIndex = (galleryIndex - 1 + product.images.length) % product.images.length;
+      image.src = product.images[galleryIndex];
+      count.textContent = (galleryIndex + 1) + " / " + product.images.length;
+    });
+
+    next.addEventListener("click", function(event) {
+      event.stopPropagation();
+      galleryIndex = (galleryIndex + 1) % product.images.length;
+      image.src = product.images[galleryIndex];
+      count.textContent = (galleryIndex + 1) + " / " + product.images.length;
+    });
+
+    gallery.append(prev, next, count);
   }
+
+  image.addEventListener("click", function() {
+    openProductImageViewer(product.images, galleryIndex, product.name);
+  });
+
+  card.appendChild(gallery);
+} else {
+  card.appendChild(makeElement("div", "image-placeholder", "ROJJ"));
+}
+
 
   const details = makeElement("div", "product-details");
 
