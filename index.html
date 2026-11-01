@@ -907,7 +907,7 @@ backButton.addEventListener("click", closeViewer);
     if (event.target === viewer) closeViewer();
   });
 
-  viewer.append(mainImage, close, previous, next, counter);
+  viewer.append(mainImage, backButton, close, previous, next, counter);
   document.body.appendChild(viewer);
   document.body.style.overflow = "hidden";
   document.addEventListener("keydown", handleKey);
